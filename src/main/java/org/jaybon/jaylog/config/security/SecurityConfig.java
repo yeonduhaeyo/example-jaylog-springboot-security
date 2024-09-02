@@ -1,16 +1,17 @@
 package org.jaybon.jaylog.config.security;
 
-import com.example.my.config.security.auth.CustomAuthenticationFailureHandler;
-import com.example.my.config.security.auth.CustomAuthenticationSuccessHandler;
-import com.example.my.config.security.auth.CustomLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.jaybon.jaylog.config.security.auth.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
@@ -24,17 +25,28 @@ public class SecurityConfig {
     @Value("${spring.profiles.active}")
     String activeProfile;
 
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
         httpSecurity.csrf(config -> config.disable());
 
-        if ("dev" .equals(activeProfile)) {
+        httpSecurity.formLogin(config -> config.disable());
+
+        httpSecurity.httpBasic(config -> config.disable());
+
+        httpSecurity.sessionManagement(config -> config
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+
+        httpSecurity.addFilterBefore(
+                new JwtAuthorizationFilter(
+                        httpSecurity.getSharedObject(AuthenticationManager.class)
+                ),
+                BasicAuthenticationFilter.class
+        );
+
+        if ("dev".equals(activeProfile)) {
             httpSecurity.headers(config -> config
                     .frameOptions(frameOptionsConfig -> frameOptionsConfig
                             .disable()
@@ -83,24 +95,6 @@ public class SecurityConfig {
                 .hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()
-        );
-
-        httpSecurity.formLogin(config -> config
-                .loginPage("/auth/login")
-                .loginProcessingUrl("/v*/auth/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler(customAuthenticationSuccessHandler)
-                .failureHandler(customAuthenticationFailureHandler)
-                .permitAll()
-        );
-
-        httpSecurity.logout(config -> config
-                .logoutUrl("/auth/logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessHandler(customLogoutSuccessHandler)
-                .permitAll()
         );
 
         return httpSecurity.getOrBuild();
