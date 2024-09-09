@@ -5,6 +5,7 @@ import jakarta.validation.Path;
 import org.jaybon.jaylog.common.constants.Constants;
 import org.jaybon.jaylog.common.dto.ResDTO;
 import org.jaybon.jaylog.common.exception.AuthenticationException;
+import org.jaybon.jaylog.common.exception.AuthorityException;
 import org.jaybon.jaylog.common.exception.BadRequestException;
 import org.jaybon.jaylog.common.exception.EntityAlreadyExistException;
 import org.springframework.core.convert.ConversionFailedException;
@@ -182,6 +183,17 @@ public class CommonExceptionHandler {
                         .message("로그인이 필요한 서비스입니다.")
                         .build(),
                 HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(AuthorityException.class)
+    public HttpEntity<?> handleAuthorityException(Exception e) {
+        return new ResponseEntity<>(
+                ResDTO.builder()
+                        .code(Constants.ResCode.AUTHORITY_EXCEPTION)
+                        .message("권한이 없습니다.")
+                        .build(),
+                HttpStatus.FORBIDDEN
         );
     }
 

@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        httpSecurity.addFilterBefore(
+        httpSecurity.addFilterAt(
                 new JwtAuthorizationFilter(
                         httpSecurity.getSharedObject(AuthenticationManager.class)
                 ),

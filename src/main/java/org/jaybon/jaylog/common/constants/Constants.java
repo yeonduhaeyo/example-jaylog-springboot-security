@@ -26,6 +26,7 @@ public class Constants {
         public static final int METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION = -6;
         public static final int CONVERSION_FAILED_EXCEPTION = -7;
         public static final int AUTHENTICATION_EXCEPTION = -9;
+        public static final int AUTHORITY_EXCEPTION = -10;
         public static final int EXCEPTION = -99;
     }
 
