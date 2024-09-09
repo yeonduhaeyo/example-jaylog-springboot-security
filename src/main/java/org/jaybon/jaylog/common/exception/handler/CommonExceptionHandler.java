@@ -175,6 +175,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
+    @Deprecated
     public HttpEntity<?> handleAuthenticationException(Exception e) {
         e.printStackTrace();
         return new ResponseEntity<>(
@@ -187,6 +188,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(AuthorityException.class)
+    @Deprecated
     public HttpEntity<?> handleAuthorityException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
