@@ -13,42 +13,49 @@ import org.jaybon.jaylog.common.exception.AuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
+    private final CustomUserDetailsService customUserDetailsService;
+
     public JwtAuthorizationFilter(
-            AuthenticationManager authenticationManager
+            AuthenticationManager authenticationManager,
+            CustomUserDetailsService customUserDetailsService
     ) {
         super(authenticationManager);
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String jwtHeader = request.getHeader(Constants.Jwt.HEADER_STRING);
-        String jwtToken;
-        DecodedJWT decodedJWT;
-        if (jwtHeader == null || !jwtHeader.startsWith(Constants.Jwt.TOKEN_PREFIX)) {
+        String accessJWTHeader = request.getHeader(Constants.Jwt.ACCESS_HEADER_NAME);
+        DecodedJWT decodedAccessJWT;
+        if (accessJWTHeader == null || !accessJWTHeader.startsWith(Constants.Jwt.HEADER_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
+        String accessJWT = accessJWTHeader.replace(Constants.Jwt.HEADER_PREFIX, "");
         try {
-            jwtToken = jwtHeader.replace(Constants.Jwt.TOKEN_PREFIX, "");
-            decodedJWT = JWT.require(Algorithm.HMAC512(Constants.Jwt.SECRET))
+            decodedAccessJWT = JWT.require(Algorithm.HMAC512(Constants.Jwt.SECRET))
                     .build()
-                    .verify(jwtToken);
+                    .verify(accessJWT);
         } catch (JWTVerificationException e) {
-            throw new AuthenticationException("토큰 검증 실패");
+            chain.doFilter(request, response);
+            return;
         }
-        CustomUserDetails customUserDetails = new CustomUserDetails(
-                CustomUserDetails.User.builder()
-                        .id(decodedJWT.getClaim("id").asLong())
-                        .username(decodedJWT.getClaim("username").asString())
-                        .roleList(decodedJWT.getClaim("roleList").asList(String.class))
-                        .build()
-        );
+        if (decodedAccessJWT.getExpiresAt().before(new java.util.Date())) {
+            chain.doFilter(request, response);
+            return;
+        }
+        CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(decodedAccessJWT.getClaim("username").asString());
+        if (customUserDetails.getUser().getJwtValidator() > decodedAccessJWT.getClaim("timestamp").asLong()) {
+            chain.doFilter(request, response);
+            return;
+        }
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
                         customUserDetails,

@@ -1,8 +1,10 @@
 package org.jaybon.jaylog.config.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.jaybon.jaylog.config.security.auth.CustomAccessDeniedHandler;
 import org.jaybon.jaylog.config.security.auth.CustomAuthenticationEntryPoint;
+import org.jaybon.jaylog.config.security.auth.CustomUserDetailsService;
 import org.jaybon.jaylog.config.security.auth.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,18 +29,23 @@ public class SecurityConfig {
     @Value("${spring.profiles.active}")
     String activeProfile;
 
-//    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
+        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(
+                httpSecurity.getSharedObject(AuthenticationManager.class),
+                customUserDetailsService
+        );
+
         if ("dev".equals(activeProfile)) {
             httpSecurity.headers(config -> config
-                    .frameOptions(frameOptionsConfig -> frameOptionsConfig
-                            .disable()
-                    )
+                    .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())
             );
 
 //        httpSecurity.authorizeHttpRequests(config -> config
@@ -62,16 +69,11 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        httpSecurity.addFilterAt(
-                new JwtAuthorizationFilter(
-                        httpSecurity.getSharedObject(AuthenticationManager.class)
-                ),
-                BasicAuthenticationFilter.class
-        );
+        httpSecurity.addFilterAt(jwtAuthorizationFilter, BasicAuthenticationFilter.class);
 
         httpSecurity.exceptionHandling(config -> config
-//                .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler(customAccessDeniedHandler)
         );
 
         httpSecurity.authorizeHttpRequests(config -> config

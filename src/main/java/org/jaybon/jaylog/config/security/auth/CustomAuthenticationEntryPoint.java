@@ -16,7 +16,6 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-@Deprecated
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;

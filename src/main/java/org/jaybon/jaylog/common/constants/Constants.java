@@ -4,10 +4,11 @@ public class Constants {
 
     public static class Jwt {
         public static final String SECRET = "sweetsalt"; // 서버만 알고 있는 비밀값
-        public static final int EXPIRATION_TIME = 30 * 60 * 1000; // 만료기간 30분 (1/1000초)
-        public static final int EXPIRATION_TIME_REFRESH = 7 * 24 * 60 * 60 * 1000; // 만료기간 7일 (1/1000초)
-        public static final String HEADER_STRING = "Authorization";
-        public static final String TOKEN_PREFIX = "Bearer ";
+        public static final int ACCESS_EXPIRATION_TIME = 30 * 60 * 1000; // 만료기간 30분 (1/1000초)
+        public static final int REFRESH_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 만료기간 7일 (1/1000초)
+        public static final String ACCESS_HEADER_NAME = "Authorization";
+        public static final String REFRESH_HEADER_NAME = "Refresh";
+        public static final String HEADER_PREFIX = "Bearer ";
     }
 
     public static class Regex {

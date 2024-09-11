@@ -32,6 +32,8 @@ public class CustomUserDetails implements UserDetails {
         private Long id;
         private String username;
         private String password;
+        private String loginType;
+        private Long jwtValidator;
         private List<String> roleList;
 
         public static User fromEntity(UserEntity userEntity) {
@@ -39,6 +41,8 @@ public class CustomUserDetails implements UserDetails {
                     .id(userEntity.getId())
                     .username(userEntity.getUsername())
                     .password(userEntity.getPassword())
+                    .loginType(userEntity.getLoginType().toString())
+                    .jwtValidator(userEntity.getJwtValidator())
                     .roleList(
                             userEntity.getUserRoleEntityList()
                                     .stream()

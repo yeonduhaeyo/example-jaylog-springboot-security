@@ -8,25 +8,31 @@ import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UtilFunction {
 
-    public static String generateJwtTokenByCustomUserDetailsAndExpirationTime(
-            CustomUserDetails customUserDetails,
-            Integer expirationTime
-    ) {
+    public static String generateAccessJwtByCustomUserDetails(CustomUserDetails customUserDetails) {
         return JWT.create()
                 .withSubject("accessToken")
-                .withClaim("id", customUserDetails.getUser().getId())
+                .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.ACCESS_EXPIRATION_TIME))
                 .withClaim("username", customUserDetails.getUsername())
                 .withClaim("roleList", customUserDetails.getUser().getRoleList())
-                .withClaim("loginType", "default")
-                .withClaim("rememberMe", false)
-                .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
+                .withClaim("loginType", customUserDetails.getUser().getLoginType())
+                .withClaim("timestamp", Timestamp.valueOf(LocalDateTime.now()).getTime())
+                .sign(Algorithm.HMAC512(Constants.Jwt.SECRET));
+    }
+
+    public static String generateRefreshJwtByCustomUserDetails(CustomUserDetails customUserDetails) {
+        return JWT.create()
+                .withSubject("refreshToken")
+                .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.REFRESH_EXPIRATION_TIME))
+                .withClaim("username", customUserDetails.getUsername())
+                .withClaim("timestamp", Timestamp.valueOf(LocalDateTime.now()).getTime())
                 .sign(Algorithm.HMAC512(Constants.Jwt.SECRET));
     }
 
