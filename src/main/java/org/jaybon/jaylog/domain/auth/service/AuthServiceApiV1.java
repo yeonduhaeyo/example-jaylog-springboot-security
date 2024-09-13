@@ -12,6 +12,7 @@ import org.jaybon.jaylog.common.exception.AuthenticationException;
 import org.jaybon.jaylog.common.exception.BadRequestException;
 import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
 import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostJoinDTOApiV1;
+import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostLoginDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostRefreshDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostRefreshDTOApiV1;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
@@ -54,6 +55,8 @@ public class AuthServiceApiV1 {
 //        );
 //    }
 
+
+
     @Transactional
     public ResponseEntity<ResDTO<Object>> join(ReqAuthPostJoinDTOApiV1 dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUsername(dto.getUser().getUsername());
@@ -73,6 +76,41 @@ public class AuthServiceApiV1 {
                         .build(),
                 HttpStatus.OK
         );
+    }
+
+    @Transactional
+    public ResponseEntity<ResDTO<Object>> login(ReqAuthPostLoginDTOApiV1 dto) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByUsernameAndDeleteDateIsNull(dto.getUser().getUsername());
+
+        return null;
+
+//        DecodedJWT decodedRefreshJWT;
+//        try {
+//            decodedRefreshJWT = JWT.require(Algorithm.HMAC512(Constants.Jwt.SECRET))
+//                    .build()
+//                    .verify(dto.getRefreshJwt());
+//        } catch (JWTVerificationException e) {
+//            throw new AuthenticationException("유효하지 않은 토큰입니다.");
+//        }
+//        Optional<UserEntity> userEntityOptional = userRepository.findByUsernameAndDeleteDateIsNull(decodedRefreshJWT.getClaim("username").asString());
+//        if (userEntityOptional.isEmpty()) {
+//            throw new AuthenticationException("존재하지 않는 사용자입니다.");
+//        }
+//        UserEntity userEntity = userEntityOptional.get();
+//        if (userEntity.getJwtValidator() > decodedRefreshJWT.getClaim("timestamp").asLong()) {
+//            throw new AuthenticationException("유효하지 않은 토큰입니다.");
+//        }
+//        CustomUserDetails customUserDetails = CustomUserDetails.of(userEntityOptional.get());
+//        String accessJwt = UtilFunction.generateAccessJwtByCustomUserDetails(customUserDetails);
+//        String refreshJwt = UtilFunction.generateRefreshJwtByCustomUserDetails(customUserDetails);
+//        return new ResponseEntity<>(
+//                ResDTO.builder()
+//                        .code(0)
+//                        .message("토큰 갱신에 성공하였습니다.")
+//                        .data(ResAuthPostRefreshDTOApiV1.of(accessJwt, refreshJwt))
+//                        .build(),
+//                HttpStatus.OK
+//        );
     }
 
     @Transactional
