@@ -2,7 +2,12 @@ package org.jaybon.jaylog.domain.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.jaybon.jaylog.common.dto.ResDTO;
+import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostJoinDTOApiV1;
+import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostLoginDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostRefreshDTOApiV1;
+import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostLoginDTOApiV1;
+import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostRefreshDTOApiV1;
 import org.jaybon.jaylog.domain.auth.service.AuthServiceApiV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,18 +22,18 @@ public class AuthControllerApiV1 {
 
     private final AuthServiceApiV1 authServiceApiV1;
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@Valid @RequestBody ReqLoginDTOApiV1 dto, HttpSession session) {
-//        return authServiceApiV1.login(dto, session);
-//    }
+    @PostMapping("/join")
+    public ResponseEntity<ResDTO<Object>> join(@Valid @RequestBody ReqAuthPostJoinDTOApiV1 dto) {
+        return authServiceApiV1.join(dto);
+    }
 
-//    @PostMapping("/join")
-//    public ResponseEntity<?> join(@Valid @RequestBody ReqJoinDTOApiV1 dto) {
-//        return authServiceApiV1.join(dto);
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<ResDTO<ResAuthPostLoginDTOApiV1>> login(@Valid @RequestBody ReqAuthPostLoginDTOApiV1 dto) {
+        return authServiceApiV1.login(dto);
+    }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@Valid @RequestBody ReqAuthPostRefreshDTOApiV1 dto) {
+    public ResponseEntity<ResDTO<ResAuthPostRefreshDTOApiV1>> refresh(@Valid @RequestBody ReqAuthPostRefreshDTOApiV1 dto) {
         return authServiceApiV1.refresh(dto);
     }
 

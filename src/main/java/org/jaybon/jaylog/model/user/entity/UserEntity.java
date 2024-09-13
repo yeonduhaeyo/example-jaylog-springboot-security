@@ -3,9 +3,15 @@ package org.jaybon.jaylog.model.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
+import org.jaybon.jaylog.model.article.entity.ArticleEntity;
+import org.jaybon.jaylog.model.like.entity.LikeEntity;
 import org.jaybon.jaylog.model.user.constraint.UserLoginType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -53,5 +59,12 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     private List<UserRoleEntity> userRoleEntityList;
+
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    @SQLRestriction("delete_date is null")
+    private List<ArticleEntity> articleEntityList;
+
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    private List<LikeEntity> likeEntityList;
 
 }

@@ -9,7 +9,6 @@ import org.jaybon.jaylog.common.exception.AuthorityException;
 import org.jaybon.jaylog.common.exception.BadRequestException;
 import org.jaybon.jaylog.common.exception.EntityAlreadyExistException;
 import org.springframework.core.convert.ConversionFailedException;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -29,7 +28,7 @@ import java.util.stream.StreamSupport;
 public class CommonExceptionHandler {
 
     @ExceptionHandler(EntityAlreadyExistException.class)
-    public HttpEntity<?> handleEntityAlreadyExistException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleEntityAlreadyExistException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.ENTITY_ALREADY_EXIST_EXCEPTION)
@@ -40,7 +39,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public HttpEntity<?> handleBadRequestException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleBadRequestException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.BAD_REQUEST_EXCEPTION)
@@ -51,7 +50,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public HttpEntity<?> handleMissingServletRequestParameterException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleMissingServletRequestParameterException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.MISSING_SERVLET_REQUEST_PARAMETER_EXCEPTION)
@@ -62,7 +61,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public HttpEntity<?> handleBindException(BindException e) {
+    public ResponseEntity<ResDTO<Object>> handleBindException(BindException e) {
         Map<String, String> errorMap = new HashMap<>();
 
         e.getBindingResult().getFieldErrors().forEach(fieldError -> {
@@ -81,7 +80,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public HttpEntity<?> handleBindException(ConstraintViolationException exception) {
+    public ResponseEntity<ResDTO<Object>> handleBindException(ConstraintViolationException exception) {
         Map<String, String> errorMap = new HashMap<>();
         exception.getConstraintViolations().forEach(constraintViolation -> {
             List<Path.Node> pathNodeList = StreamSupport
@@ -100,8 +99,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public HttpEntity<?> handleHttpMessageNotReadableException(Exception e) {
-
+    public ResponseEntity<ResDTO<Object>> handleHttpMessageNotReadableException(Exception e) {
         if (e.getMessage().contains("Required request body is missing")) {
             return new ResponseEntity<>(
                     ResDTO.builder()
@@ -111,7 +109,6 @@ public class CommonExceptionHandler {
                     HttpStatus.BAD_REQUEST
             );
         }
-
         if (e.getMessage().contains("Enum class: ")) {
             return new ResponseEntity<>(
                     ResDTO.builder()
@@ -121,7 +118,6 @@ public class CommonExceptionHandler {
                     HttpStatus.BAD_REQUEST
             );
         }
-
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.HTTP_MESSAGE_NOT_READABLE_EXCEPTION)
@@ -129,11 +125,10 @@ public class CommonExceptionHandler {
                         .build(),
                 HttpStatus.BAD_REQUEST
         );
-
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public HttpEntity<?> handleHttpRequestMethodNotSupportedException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleHttpRequestMethodNotSupportedException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.HTTP_REQUEST_METHOD_NOT_SUPPORT_EXCEPTION)
@@ -144,7 +139,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public HttpEntity<?> handleMethodArgumentTypeMismatchException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleMethodArgumentTypeMismatchException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION)
@@ -155,7 +150,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(ConversionFailedException.class)
-    public HttpEntity<?> handleConversionFailedException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleConversionFailedException(Exception e) {
         if (e.getMessage().contains("persistence.Enumerated")) {
             return new ResponseEntity<>(
                     ResDTO.builder()
@@ -175,7 +170,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public HttpEntity<?> handleAuthenticationException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleAuthenticationException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.AUTHENTICATION_EXCEPTION)
@@ -186,7 +181,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(AuthorityException.class)
-    public HttpEntity<?> handleAuthorityException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleAuthorityException(Exception e) {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.AUTHORITY_EXCEPTION)
@@ -197,8 +192,11 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public HttpEntity<?> handleException(Exception e) {
+    public ResponseEntity<ResDTO<Object>> handleException(Exception e) {
         e.printStackTrace();
+        // ---
+        // TODO: 로깅
+        // ---
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.EXCEPTION)

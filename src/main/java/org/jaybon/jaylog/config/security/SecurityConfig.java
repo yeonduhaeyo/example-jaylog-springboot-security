@@ -1,6 +1,5 @@
 package org.jaybon.jaylog.config.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.jaybon.jaylog.config.security.auth.CustomAccessDeniedHandler;
 import org.jaybon.jaylog.config.security.auth.CustomAuthenticationEntryPoint;
