@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/v1/main")
 public class MainControllerApiV1 {
-    
+
     @GetMapping
     public ResponseEntity<ResDTO<Object>> get() {
         return null;

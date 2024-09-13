@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/article")
 public class ArticleControllerApiV1 {
 
-
-    @GetMapping
-    public ResponseEntity<ResDTO<Object>> get() {
-        return null;
-    }
+//    @GetMapping
+//    public ResponseEntity<ResDTO<Object>> get() {
+//        return null;
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> getById(@PathVariable Long id) {
@@ -44,7 +43,7 @@ public class ArticleControllerApiV1 {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<ResDTO<Object>> postLikeByArticleId(
+    public ResponseEntity<ResDTO<Object>> postLikeById(
             @PathVariable Long id,
             @Valid @RequestBody Object dto
     ) {
