@@ -3,15 +3,14 @@ package org.jaybon.jaylog.model.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.like.entity.LikeEntity;
 import org.jaybon.jaylog.model.user.constraint.UserLoginType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,9 +48,11 @@ public class UserEntity {
     private Long jwtValidator;
 
     @Column(name = "create_date", nullable = false)
+    @CreationTimestamp
     private LocalDateTime createDate;
 
     @Column(name = "update_date")
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 
     @Column(name = "delete_date")

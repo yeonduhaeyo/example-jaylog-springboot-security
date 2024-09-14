@@ -2,6 +2,7 @@ package org.jaybon.jaylog.model.like.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 
@@ -30,6 +31,7 @@ public class LikeEntity {
     private ArticleEntity articleEntity;
 
     @Column(name = "create_date", nullable = false)
+    @CreationTimestamp
     private LocalDateTime createDate;
 
 }

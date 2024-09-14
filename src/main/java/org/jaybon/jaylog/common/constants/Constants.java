@@ -12,7 +12,8 @@ public class Constants {
     }
 
     public static class Regex {
-        public static final String TODO_DONE_YN = "^[NY]$";
+        public static final String MARKDOWN = "/([*_#`~>!\\[\\](){}|\\\\])/gi";
+        public static final String MARKDOWN_IMAGE = "/\\[.*]\\((.*)\\)/gi";
     }
 
     public static class ResCode {

@@ -2,6 +2,7 @@ package org.jaybon.jaylog.model.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,7 @@ public class UserRoleEntity {
     private String role;
 
     @Column(name = "create_date")
+    @CreationTimestamp
     private LocalDateTime createDate;
 
 }

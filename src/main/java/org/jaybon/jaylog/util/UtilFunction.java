@@ -3,18 +3,60 @@ package org.jaybon.jaylog.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.jaybon.jaylog.common.constants.Constants;
+import org.jaybon.jaylog.common.exception.BadRequestException;
 import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
+import org.jaybon.jaylog.model.article.entity.ArticleEntity;
+import org.jaybon.jaylog.model.article.repository.ArticleRepository;
+import org.jaybon.jaylog.model.user.entity.UserEntity;
+import org.jaybon.jaylog.model.user.repository.UserRepository;
 
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UtilFunction {
+
+    public static ArticleEntity getArticleEntityById(
+            ArticleRepository articleRepository,
+            Long id
+    ) {
+        Optional<ArticleEntity> articleEntityOptional = articleRepository.findByIdAndDeleteDateIsNull(id);
+        if (articleEntityOptional.isEmpty()) {
+            throw new BadRequestException("해당 게시글이 존재하지 않습니다.");
+        }
+        return articleEntityOptional.get();
+    }
+
+    public static UserEntity getUserEntityByCustomUserDetails(
+            UserRepository userRepository,
+            CustomUserDetails customUserDetails
+    ) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByIdAndDeleteDateIsNull(customUserDetails.getUser().getId());
+        if (userEntityOptional.isEmpty()) {
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+        return userEntityOptional.get();
+    }
+
+    public static String getFirstUrlFromMarkdown(String markdown) {
+        List<String> urlList = getUrlFromMarkdown(markdown);
+        return urlList.isEmpty() ? null : urlList.get(0);
+    }
+
+    public static List<String> getUrlFromMarkdown(String markdown) {
+        Pattern pattern = Pattern.compile(Constants.Regex.MARKDOWN_IMAGE);
+        Matcher matcher = pattern.matcher(markdown);
+        List<String> urlList = new ArrayList<>();
+        while (matcher.find()) {
+            urlList.add(matcher.group(1));
+        }
+        return urlList;
+    }
 
     public static String generateAccessJwtByCustomUserDetails(CustomUserDetails customUserDetails) {
         return JWT.create()
