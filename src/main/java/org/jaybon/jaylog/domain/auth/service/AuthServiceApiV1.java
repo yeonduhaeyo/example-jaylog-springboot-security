@@ -38,7 +38,7 @@ public class AuthServiceApiV1 {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseEntity<ResDTO<Object>> join(ReqAuthPostJoinDTOApiV1 dto) {
+    public ResponseEntity<ResDTO<Object>> joinBy(ReqAuthPostJoinDTOApiV1 dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUsername(dto.getUser().getUsername());
         if (userEntityOptional.isPresent()) {
             throw new BadRequestException("이미 존재하는 아이디입니다.");
@@ -64,7 +64,7 @@ public class AuthServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<ResDTO<ResAuthPostLoginDTOApiV1>> login(ReqAuthPostLoginDTOApiV1 dto) {
+    public ResponseEntity<ResDTO<ResAuthPostLoginDTOApiV1>> loginBy(ReqAuthPostLoginDTOApiV1 dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUsernameAndDeleteDateIsNull(dto.getUser().getUsername());
         if (userEntityOptional.isEmpty()) {
             throw new AuthenticationException("아이디를 정확히 입력해주세요.");
@@ -74,8 +74,8 @@ public class AuthServiceApiV1 {
             throw new AuthenticationException("비밀번호를 정확히 입력해주세요.");
         }
         CustomUserDetails customUserDetails = CustomUserDetails.of(userEntityOptional.get());
-        String accessJwt = UtilFunction.generateAccessJwtByCustomUserDetails(customUserDetails);
-        String refreshJwt = UtilFunction.generateRefreshJwtByCustomUserDetails(customUserDetails);
+        String accessJwt = UtilFunction.generateAccessJwtBy(customUserDetails);
+        String refreshJwt = UtilFunction.generateRefreshJwtBy(customUserDetails);
         return new ResponseEntity<>(
                 ResDTO.<ResAuthPostLoginDTOApiV1>builder()
                         .code(0)
@@ -87,7 +87,7 @@ public class AuthServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<ResDTO<ResAuthPostRefreshDTOApiV1>> refresh(ReqAuthPostRefreshDTOApiV1 dto) {
+    public ResponseEntity<ResDTO<ResAuthPostRefreshDTOApiV1>> refreshBy(ReqAuthPostRefreshDTOApiV1 dto) {
         DecodedJWT decodedRefreshJWT;
         try {
             decodedRefreshJWT = JWT.require(Algorithm.HMAC512(Constants.Jwt.SECRET))
@@ -105,8 +105,8 @@ public class AuthServiceApiV1 {
             throw new AuthenticationException("유효하지 않은 토큰입니다.");
         }
         CustomUserDetails customUserDetails = CustomUserDetails.of(userEntityOptional.get());
-        String accessJwt = UtilFunction.generateAccessJwtByCustomUserDetails(customUserDetails);
-        String refreshJwt = UtilFunction.generateRefreshJwtByCustomUserDetails(customUserDetails);
+        String accessJwt = UtilFunction.generateAccessJwtBy(customUserDetails);
+        String refreshJwt = UtilFunction.generateRefreshJwtBy(customUserDetails);
         return new ResponseEntity<>(
                 ResDTO.<ResAuthPostRefreshDTOApiV1>builder()
                         .code(0)

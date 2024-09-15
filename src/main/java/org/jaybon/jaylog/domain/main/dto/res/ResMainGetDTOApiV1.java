@@ -1,81 +1,91 @@
-package org.jaybon.jaylog.domain.main.dto.res;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.jaybon.jaylog.common.constants.Constants;
-import org.jaybon.jaylog.model.article.entity.ArticleEntity;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ResMainGetDTOApiV1 {
-
-    private List<Article> articleList;
-
-    public static ResMainGetDTOApiV1 of(List<ArticleEntity> articleEntityList) {
-        return ResMainGetDTOApiV1.builder()
-                .articleList(Article.fromEntityList(articleEntityList))
-                .build();
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Article {
-
-        private Long id;
-        private User user;
-        private String title;
-        private String thumbnail;
-        private String content;
-        private String summary;
-        private Integer likeCount;
-        private LocalDateTime createDate;
-
-        public static List<Article> fromEntityList(List<ArticleEntity> articleEntityList) {
-            return articleEntityList.stream()
-                    .map(Article::fromEntity)
-                    .toList();
-        }
-
-        public static Article fromEntity(ArticleEntity articleEntity) {
-            return Article.builder()
-                    .id(articleEntity.getId())
-                    .user(
-                            User.builder()
-                                    .username(articleEntity.getUserEntity().getUsername())
-                                    .profileImage(articleEntity.getUserEntity().getProfileImage())
-                                    .build()
-                    )
-                    .title(articleEntity.getTitle())
-                    .thumbnail(articleEntity.getThumbnail())
-                    .content(articleEntity.getContent())
-                    .summary(
-                            articleEntity.getContent()
-                                    .replaceAll(Constants.Regex.MARKDOWN, "")
-                                    .substring(0, 151)
-                    )
-                    .likeCount(articleEntity.getLikeEntityList().size())
-                    .createDate(articleEntity.getCreateDate())
-                    .build();
-        }
-
-        @Getter
-        @Builder
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class User {
-            private String username;
-            private String profileImage;
-        }
-
-    }
-
-}
+//package org.jaybon.jaylog.domain.main.dto.res;
+//
+//
+//import kr.co.nomadlab.workplatform.model.npost.constraint.NpostScrapStatusType;
+//import kr.co.nomadlab.workplatform.model.npost.entity.NpostScrapEntity;
+//import lombok.*;
+//import org.jaybon.jaylog.model.article.entity.ArticleEntity;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageImpl;
+//
+//import java.time.LocalDateTime;
+//import java.util.List;
+//
+//@Data
+//@Builder
+//@NoArgsConstructor
+//@AllArgsConstructor
+//public class ResMainGetDTOApiV1 {
+//
+//    private ArticlePage articlePage;
+//
+//    public static ResMainGetDTOApiV1 of(Page<ArticleEntity> articleEntityPage) {
+//        return ResMainGetDTOApiV1.builder()
+//                .articlePage(new ArticlePage(articleEntityPage))
+//                .build();
+//    }
+//
+//    @Getter
+//    @ToString
+//    public static class ArticlePage extends PageImpl<ArticlePage.Article> {
+//
+//        public ArticlePage(Page<NpostScrapEntity> npostScrapEntityPage) {
+//            super(
+//                    NpostScrap.fromEntityList(npostScrapEntityPage.getContent()),
+//                    npostScrapEntityPage.getPageable(),
+//                    npostScrapEntityPage.getTotalElements()
+//            );
+//        }
+//
+//        public ArticlePage(List<NpostScrapEntity> npostScrapEntityList) {
+//            super(NpostScrap.fromEntityList(npostScrapEntityList));
+//        }
+//
+//        @Data
+//        @Builder
+//        @NoArgsConstructor
+//        @AllArgsConstructor
+//        public static class Article {
+//
+//            private Long id;
+//            private String url;
+//            private String memo;
+//            private NpostScrapStatusType status;
+//            private String description;
+//            private Integer requestCount;
+//            private Integer startCount;
+//            private Integer workCount;
+//            private Integer endCount;
+//            private LocalDateTime startDate;
+//            private LocalDateTime endDate;
+//            private LocalDateTime createDate;
+//
+//            public static List<NpostScrap> fromEntityList(List<NpostScrapEntity> npostScrapEntityList) {
+//                return npostScrapEntityList
+//                        .stream()
+//                        .map(NpostScrap::fromEntity)
+//                        .toList();
+//            }
+//
+//            public static NpostScrap fromEntity(NpostScrapEntity npostScrapEntity) {
+//                return NpostScrap.builder()
+//                        .id(npostScrapEntity.getId())
+//                        .url(npostScrapEntity.getUrl())
+//                        .memo(npostScrapEntity.getMemo())
+//                        .status(npostScrapEntity.getStatus())
+//                        .description(npostScrapEntity.getDescription())
+//                        .requestCount(npostScrapEntity.getRequestCount())
+//                        .startCount(npostScrapEntity.getStartCount())
+//                        .workCount(npostScrapEntity.getWorkCount())
+//                        .endCount(npostScrapEntity.getEndCount())
+//                        .startDate(npostScrapEntity.getStartDate())
+//                        .endDate(npostScrapEntity.getEndDate())
+//                        .createDate(npostScrapEntity.getCreateDate())
+//                        .build();
+//            }
+//
+//        }
+//
+//    }
+//
+//}

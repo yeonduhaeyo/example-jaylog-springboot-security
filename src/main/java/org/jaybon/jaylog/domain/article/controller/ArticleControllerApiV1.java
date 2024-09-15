@@ -21,41 +21,44 @@ public class ArticleControllerApiV1 {
     private final ArticleServiceApiV1 articleServiceApiV1;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResDTO<ResArticleGetByIdDTOApiV1>> getById(@PathVariable Long id) {
-        return articleServiceApiV1.getById(id);
+    public ResponseEntity<ResDTO<ResArticleGetByIdDTOApiV1>> getByIdAndCustomUserDetails(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return articleServiceApiV1.getByIdAndCustomUserDetails(id, customUserDetails);
     }
 
     @PostMapping
-    public ResponseEntity<ResDTO<Object>> post(
+    public ResponseEntity<ResDTO<Object>> postBy(
             @Valid @RequestBody ReqArticlePostDTOApiV1 dto,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return articleServiceApiV1.post(dto, customUserDetails);
+        return articleServiceApiV1.postBy(dto, customUserDetails);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> put(
+    public ResponseEntity<ResDTO<Object>> putBy(
             @PathVariable Long id,
             @Valid @RequestBody ReqArticlePutDTOApiV1 dto,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return articleServiceApiV1.put(id, dto, customUserDetails);
+        return articleServiceApiV1.putBy(id, dto, customUserDetails);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> delete(
+    public ResponseEntity<ResDTO<Object>> deleteById(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return articleServiceApiV1.delete(id, customUserDetails);
+        return articleServiceApiV1.deleteById(id, customUserDetails);
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<ResDTO<ResArticlePostLikeByIdDTOApiV1>> postLikeById(
+    public ResponseEntity<ResDTO<ResArticlePostLikeByIdDTOApiV1>> postLikeByIdAndCustomUserDetails(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return articleServiceApiV1.postLikeById(id, customUserDetails);
+        return articleServiceApiV1.postLikeByIdAndCustomUserDetails(id, customUserDetails);
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class UtilFunction {
 
-    public static ArticleEntity getArticleEntityById(
+    public static ArticleEntity getArticleEntityBy(
             ArticleRepository articleRepository,
             Long id
     ) {
@@ -32,7 +32,7 @@ public class UtilFunction {
         return articleEntityOptional.get();
     }
 
-    public static UserEntity getUserEntityByCustomUserDetails(
+    public static UserEntity getUserEntityBy(
             UserRepository userRepository,
             CustomUserDetails customUserDetails
     ) {
@@ -44,11 +44,11 @@ public class UtilFunction {
     }
 
     public static String getFirstUrlFromMarkdown(String markdown) {
-        List<String> urlList = getUrlFromMarkdown(markdown);
+        List<String> urlList = getUrlListFromMarkdown(markdown);
         return urlList.isEmpty() ? null : urlList.get(0);
     }
 
-    public static List<String> getUrlFromMarkdown(String markdown) {
+    public static List<String> getUrlListFromMarkdown(String markdown) {
         Pattern pattern = Pattern.compile(Constants.Regex.MARKDOWN_IMAGE);
         Matcher matcher = pattern.matcher(markdown);
         List<String> urlList = new ArrayList<>();
@@ -58,7 +58,7 @@ public class UtilFunction {
         return urlList;
     }
 
-    public static String generateAccessJwtByCustomUserDetails(CustomUserDetails customUserDetails) {
+    public static String generateAccessJwtBy(CustomUserDetails customUserDetails) {
         return JWT.create()
                 .withSubject("accessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.ACCESS_EXPIRATION_TIME))
@@ -69,7 +69,7 @@ public class UtilFunction {
                 .sign(Algorithm.HMAC512(Constants.Jwt.SECRET));
     }
 
-    public static String generateRefreshJwtByCustomUserDetails(CustomUserDetails customUserDetails) {
+    public static String generateRefreshJwtBy(CustomUserDetails customUserDetails) {
         return JWT.create()
                 .withSubject("refreshToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.REFRESH_EXPIRATION_TIME))
@@ -93,7 +93,7 @@ public class UtilFunction {
         return OS.contains("nix") || OS.contains("nux") || OS.contains("aix");
     }
 
-    public static Map<String, String> parseQueryString(String url) {
+    public static Map<String, String> parseQueryStringOf(String url) {
         Map<String, String> queryPairs = new HashMap<>();
         try {
             URL urlObj = new URL(url);

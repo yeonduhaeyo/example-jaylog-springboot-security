@@ -32,7 +32,7 @@ public class ReqArticlePutDTOApiV1 {
         @NotBlank(message = "내용을 입력해주세요.")
         private String content;
 
-        public void setTitleAndThumbnailAndContentOf(ArticleEntity articleEntity) {
+        public void update(ArticleEntity articleEntity) {
             articleEntity.setTitle(title);
             articleEntity.setThumbnail(UtilFunction.getFirstUrlFromMarkdown(content));
             articleEntity.setContent(content);

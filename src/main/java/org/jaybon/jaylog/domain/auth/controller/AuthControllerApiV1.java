@@ -23,18 +23,18 @@ public class AuthControllerApiV1 {
     private final AuthServiceApiV1 authServiceApiV1;
 
     @PostMapping("/join")
-    public ResponseEntity<ResDTO<Object>> join(@Valid @RequestBody ReqAuthPostJoinDTOApiV1 dto) {
-        return authServiceApiV1.join(dto);
+    public ResponseEntity<ResDTO<Object>> joinBy(@Valid @RequestBody ReqAuthPostJoinDTOApiV1 dto) {
+        return authServiceApiV1.joinBy(dto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResDTO<ResAuthPostLoginDTOApiV1>> login(@Valid @RequestBody ReqAuthPostLoginDTOApiV1 dto) {
-        return authServiceApiV1.login(dto);
+    public ResponseEntity<ResDTO<ResAuthPostLoginDTOApiV1>> loginBy(@Valid @RequestBody ReqAuthPostLoginDTOApiV1 dto) {
+        return authServiceApiV1.loginBy(dto);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<ResDTO<ResAuthPostRefreshDTOApiV1>> refresh(@Valid @RequestBody ReqAuthPostRefreshDTOApiV1 dto) {
-        return authServiceApiV1.refresh(dto);
+    public ResponseEntity<ResDTO<ResAuthPostRefreshDTOApiV1>> refreshBy(@Valid @RequestBody ReqAuthPostRefreshDTOApiV1 dto) {
+        return authServiceApiV1.refreshBy(dto);
     }
 
 }

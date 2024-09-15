@@ -7,14 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jaybon.jaylog.common.constants.Constants;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 import org.jaybon.jaylog.util.UtilFunction;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter
 @Builder
@@ -38,7 +33,7 @@ public class ReqArticlePostDTOApiV1 {
         @NotBlank(message = "내용을 입력해주세요.")
         private String content;
 
-        public ArticleEntity toEntity(UserEntity userEntity) {
+        public ArticleEntity toEntityWith(UserEntity userEntity) {
             return ArticleEntity.builder()
                     .userEntity(userEntity)
                     .title(title)

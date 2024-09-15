@@ -33,25 +33,31 @@ public class ArticleServiceApiV1 {
     private final ArticleRepository articleRepository;
     private final LikeRepository likeRepository;
 
-    public ResponseEntity<ResDTO<ResArticleGetByIdDTOApiV1>> getById(Long id) {
-        ArticleEntity articleEntity = UtilFunction.getArticleEntityById(articleRepository, id);
+    public ResponseEntity<ResDTO<ResArticleGetByIdDTOApiV1>> getByIdAndCustomUserDetails(Long id, CustomUserDetails customUserDetails) {
+        ArticleEntity articleEntity = UtilFunction.getArticleEntityBy(articleRepository, id);
+        long likeCount = likeRepository.countByArticleEntity_Id(articleEntity.getId());
+        boolean isLikeClicked = false;
+        if (customUserDetails != null) {
+            UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
+            isLikeClicked = likeRepository.countByUserEntity_IdAndArticleEntity_Id(userEntity.getId(), articleEntity.getId()) != 0;
+        }
         return new ResponseEntity<>(
                 ResDTO.<ResArticleGetByIdDTOApiV1>builder()
                         .code(Constants.ResCode.OK)
                         .message("게시글 조회에 성공했습니다.")
-                        .data(ResArticleGetByIdDTOApiV1.of(articleEntity))
+                        .data(ResArticleGetByIdDTOApiV1.of(articleEntity, likeCount, isLikeClicked))
                         .build(),
                 HttpStatus.OK
         );
     }
 
     @Transactional
-    public ResponseEntity<ResDTO<Object>> post(
+    public ResponseEntity<ResDTO<Object>> postBy(
             ReqArticlePostDTOApiV1 dto,
             CustomUserDetails customUserDetails
     ) {
-        UserEntity userEntity = UtilFunction.getUserEntityByCustomUserDetails(userRepository, customUserDetails);
-        articleRepository.save(dto.getArticle().toEntity(userEntity));
+        UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
+        articleRepository.save(dto.getArticle().toEntityWith(userEntity));
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.OK)
@@ -62,17 +68,17 @@ public class ArticleServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<ResDTO<Object>> put(
+    public ResponseEntity<ResDTO<Object>> putBy(
             Long id,
             ReqArticlePutDTOApiV1 dto,
             CustomUserDetails customUserDetails
     ) {
-        UserEntity userEntity = UtilFunction.getUserEntityByCustomUserDetails(userRepository, customUserDetails);
-        ArticleEntity articleEntity = UtilFunction.getArticleEntityById(articleRepository, id);
+        UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
+        ArticleEntity articleEntity = UtilFunction.getArticleEntityBy(articleRepository, id);
         if (!articleEntity.getUserEntity().equals(userEntity)) {
             throw new BadRequestException("게시글 작성자만 수정할 수 있습니다.");
         }
-        dto.getArticle().setTitleAndThumbnailAndContentOf(articleEntity);
+        dto.getArticle().update(articleEntity);
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.OK)
@@ -83,12 +89,12 @@ public class ArticleServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<ResDTO<Object>> delete(
+    public ResponseEntity<ResDTO<Object>> deleteById(
             Long id,
             CustomUserDetails customUserDetails
     ) {
-        UserEntity userEntity = UtilFunction.getUserEntityByCustomUserDetails(userRepository, customUserDetails);
-        ArticleEntity articleEntity = UtilFunction.getArticleEntityById(articleRepository, id);
+        UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
+        ArticleEntity articleEntity = UtilFunction.getArticleEntityBy(articleRepository, id);
         if (!articleEntity.getUserEntity().equals(userEntity)) {
             throw new BadRequestException("게시글 작성자만 삭제할 수 있습니다.");
         }
@@ -104,20 +110,21 @@ public class ArticleServiceApiV1 {
 
 
     @Transactional
-    public ResponseEntity<ResDTO<ResArticlePostLikeByIdDTOApiV1>> postLikeById(
+    public ResponseEntity<ResDTO<ResArticlePostLikeByIdDTOApiV1>> postLikeByIdAndCustomUserDetails(
             Long id,
             CustomUserDetails customUserDetails
     ) {
-        UserEntity userEntity = UtilFunction.getUserEntityByCustomUserDetails(userRepository, customUserDetails);
-        ArticleEntity articleEntity = UtilFunction.getArticleEntityById(articleRepository, id);
+        UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
+        ArticleEntity articleEntity = UtilFunction.getArticleEntityBy(articleRepository, id);
         boolean isLikeClicked = likeRepository.countByUserEntity_IdAndArticleEntity_Id(userEntity.getId(), articleEntity.getId()) != 0;
         if (isLikeClicked) {
             likeRepository.deleteByUserEntity_IdAndArticleEntity_Id(userEntity.getId(), articleEntity.getId());
         } else {
-            likeRepository.save(LikeEntity.builder()
+            LikeEntity likeEntityForSaving = LikeEntity.builder()
                     .userEntity(userEntity)
                     .articleEntity(articleEntity)
-                    .build());
+                    .build();
+            likeRepository.save(likeEntityForSaving);
         }
         long likeCount = likeRepository.countByArticleEntity_Id(articleEntity.getId());
         return new ResponseEntity<>(

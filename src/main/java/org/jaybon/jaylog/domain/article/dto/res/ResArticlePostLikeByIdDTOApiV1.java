@@ -15,7 +15,7 @@ public class ResArticlePostLikeByIdDTOApiV1 {
 
     public static ResArticlePostLikeByIdDTOApiV1 of(Long likeCount, Boolean isLikeClicked) {
         return ResArticlePostLikeByIdDTOApiV1.builder()
-                .article(Article.fromEntity(likeCount, isLikeClicked))
+                .article(Article.from(likeCount, isLikeClicked))
                 .build();
     }
 
@@ -28,7 +28,7 @@ public class ResArticlePostLikeByIdDTOApiV1 {
         private Long likeCount;
         private Boolean isLikeClicked;
 
-        public static Article fromEntity(Long likeCount, Boolean isLikeClicked) {
+        public static Article from(Long likeCount, Boolean isLikeClicked) {
             return Article.builder()
                     .likeCount(likeCount)
                     .isLikeClicked(isLikeClicked)

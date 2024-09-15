@@ -19,7 +19,13 @@ public class ResArticleGetByIdDTOApiV1 {
 
     public static ResArticleGetByIdDTOApiV1 of(ArticleEntity articleEntity) {
         return ResArticleGetByIdDTOApiV1.builder()
-                .article(Article.fromEntity(articleEntity))
+                .article(Article.from(articleEntity))
+                .build();
+    }
+
+    public static ResArticleGetByIdDTOApiV1 of(ArticleEntity articleEntity, long likeCount, boolean isLikeClicked) {
+        return ResArticleGetByIdDTOApiV1.builder()
+                .article(Article.from(articleEntity, likeCount, isLikeClicked))
                 .build();
     }
 
@@ -34,11 +40,11 @@ public class ResArticleGetByIdDTOApiV1 {
         private String title;
         private String thumbnail;
         private String content;
-        private Integer likeCount;
+        private Long likeCount;
         private Boolean isLikeClicked;
         private LocalDateTime createDate;
 
-        public static Article fromEntity(ArticleEntity articleEntity) {
+        public static Article from(ArticleEntity articleEntity) {
             return Article.builder()
                     .id(articleEntity.getId())
                     .user(
@@ -50,12 +56,30 @@ public class ResArticleGetByIdDTOApiV1 {
                     .title(articleEntity.getTitle())
                     .thumbnail(articleEntity.getThumbnail())
                     .content(articleEntity.getContent())
-                    .likeCount(articleEntity.getLikeEntityList().size())
+                    .likeCount((long) articleEntity.getLikeEntityList().size())
                     .isLikeClicked(
                             articleEntity.getLikeEntityList()
                                     .stream()
                                     .anyMatch(likeEntity -> Objects.equals(likeEntity.getUserEntity().getId(), articleEntity.getUserEntity().getId()))
                     )
+                    .createDate(articleEntity.getCreateDate())
+                    .build();
+        }
+
+        public static Article from(ArticleEntity articleEntity, long likeCount, boolean isLikeClicked) {
+            return Article.builder()
+                    .id(articleEntity.getId())
+                    .user(
+                            User.builder()
+                                    .username(articleEntity.getUserEntity().getUsername())
+                                    .profileImage(articleEntity.getUserEntity().getProfileImage())
+                                    .build()
+                    )
+                    .title(articleEntity.getTitle())
+                    .thumbnail(articleEntity.getThumbnail())
+                    .content(articleEntity.getContent())
+                    .likeCount(likeCount)
+                    .isLikeClicked(isLikeClicked)
                     .createDate(articleEntity.getCreateDate())
                     .build();
         }

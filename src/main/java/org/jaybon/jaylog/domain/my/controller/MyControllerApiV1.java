@@ -17,7 +17,7 @@ public class MyControllerApiV1 {
     }
 
     @PutMapping("/change-info")
-    public ResponseEntity<ResDTO<Object>> putChangeInfo(@PathVariable Long id, @Valid @RequestBody Object dto) {
+    public ResponseEntity<ResDTO<Object>> putChangeInfoBy(@PathVariable Long id, @Valid @RequestBody Object dto) {
         return null;
     }
 
