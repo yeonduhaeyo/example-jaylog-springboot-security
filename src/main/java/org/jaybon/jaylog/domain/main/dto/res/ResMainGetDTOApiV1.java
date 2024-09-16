@@ -1,91 +1,135 @@
-//package org.jaybon.jaylog.domain.main.dto.res;
-//
-//
-//import kr.co.nomadlab.workplatform.model.npost.constraint.NpostScrapStatusType;
-//import kr.co.nomadlab.workplatform.model.npost.entity.NpostScrapEntity;
-//import lombok.*;
-//import org.jaybon.jaylog.model.article.entity.ArticleEntity;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageImpl;
-//
-//import java.time.LocalDateTime;
-//import java.util.List;
-//
-//@Data
-//@Builder
-//@NoArgsConstructor
-//@AllArgsConstructor
-//public class ResMainGetDTOApiV1 {
-//
-//    private ArticlePage articlePage;
-//
-//    public static ResMainGetDTOApiV1 of(Page<ArticleEntity> articleEntityPage) {
-//        return ResMainGetDTOApiV1.builder()
-//                .articlePage(new ArticlePage(articleEntityPage))
-//                .build();
-//    }
-//
-//    @Getter
-//    @ToString
-//    public static class ArticlePage extends PageImpl<ArticlePage.Article> {
-//
-//        public ArticlePage(Page<NpostScrapEntity> npostScrapEntityPage) {
-//            super(
-//                    NpostScrap.fromEntityList(npostScrapEntityPage.getContent()),
-//                    npostScrapEntityPage.getPageable(),
-//                    npostScrapEntityPage.getTotalElements()
-//            );
-//        }
-//
-//        public ArticlePage(List<NpostScrapEntity> npostScrapEntityList) {
-//            super(NpostScrap.fromEntityList(npostScrapEntityList));
-//        }
-//
-//        @Data
-//        @Builder
-//        @NoArgsConstructor
-//        @AllArgsConstructor
-//        public static class Article {
-//
-//            private Long id;
-//            private String url;
-//            private String memo;
-//            private NpostScrapStatusType status;
-//            private String description;
-//            private Integer requestCount;
-//            private Integer startCount;
-//            private Integer workCount;
-//            private Integer endCount;
-//            private LocalDateTime startDate;
-//            private LocalDateTime endDate;
-//            private LocalDateTime createDate;
-//
-//            public static List<NpostScrap> fromEntityList(List<NpostScrapEntity> npostScrapEntityList) {
-//                return npostScrapEntityList
-//                        .stream()
-//                        .map(NpostScrap::fromEntity)
-//                        .toList();
-//            }
-//
-//            public static NpostScrap fromEntity(NpostScrapEntity npostScrapEntity) {
-//                return NpostScrap.builder()
-//                        .id(npostScrapEntity.getId())
-//                        .url(npostScrapEntity.getUrl())
-//                        .memo(npostScrapEntity.getMemo())
-//                        .status(npostScrapEntity.getStatus())
-//                        .description(npostScrapEntity.getDescription())
-//                        .requestCount(npostScrapEntity.getRequestCount())
-//                        .startCount(npostScrapEntity.getStartCount())
-//                        .workCount(npostScrapEntity.getWorkCount())
-//                        .endCount(npostScrapEntity.getEndCount())
-//                        .startDate(npostScrapEntity.getStartDate())
-//                        .endDate(npostScrapEntity.getEndDate())
-//                        .createDate(npostScrapEntity.getCreateDate())
-//                        .build();
-//            }
-//
-//        }
-//
-//    }
-//
-//}
+package org.jaybon.jaylog.domain.main.dto.res;
+
+
+import lombok.*;
+import org.jaybon.jaylog.domain.article.dto.res.ResArticleGetByIdDTOApiV1;
+import org.jaybon.jaylog.model.article.entity.ArticleEntity;
+import org.jaybon.jaylog.model.user.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResMainGetDTOApiV1 {
+
+    private ArticlePage articlePage;
+
+    public static ResMainGetDTOApiV1 of(Page<ArticleEntity> articleEntityPage, UserEntity userEntity) {
+        return ResMainGetDTOApiV1.builder()
+                .articlePage(new ArticlePage(articleEntityPage, userEntity))
+                .build();
+    }
+
+    public static ResMainGetDTOApiV1 of(Page<ArticleEntity> articleEntityPage) {
+        return ResMainGetDTOApiV1.builder()
+                .articlePage(new ArticlePage(articleEntityPage))
+                .build();
+    }
+
+    @Getter
+    @ToString
+    public static class ArticlePage extends PageImpl<ArticlePage.Article> {
+
+        public ArticlePage(Page<ArticleEntity> npostScrapEntityPage, UserEntity userEntity) {
+            super(
+                    Article.from(npostScrapEntityPage.getContent(), userEntity),
+                    npostScrapEntityPage.getPageable(),
+                    npostScrapEntityPage.getTotalElements()
+            );
+        }
+
+        public ArticlePage(Page<ArticleEntity> npostScrapEntityPage) {
+            super(
+                    Article.from(npostScrapEntityPage.getContent()),
+                    npostScrapEntityPage.getPageable(),
+                    npostScrapEntityPage.getTotalElements()
+            );
+        }
+
+        @Getter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class Article {
+
+            private Long id;
+            private Article.User user;
+            private String title;
+            private String thumbnail;
+            private String content;
+            private Long likeCount;
+            private Boolean isLikeClicked;
+            private LocalDateTime createDate;
+
+            public static List<Article> from(List<ArticleEntity> articleEntityList, UserEntity userEntity) {
+                return articleEntityList.stream()
+                        .map(articleEntity -> Article.from(articleEntity, userEntity))
+                        .toList();
+            }
+
+            public static List<Article> from(List<ArticleEntity> articleEntityList) {
+                return articleEntityList.stream()
+                        .map(Article::from)
+                        .toList();
+            }
+
+            public static Article from(ArticleEntity articleEntity, UserEntity userEntity) {
+                return Article.builder()
+                        .id(articleEntity.getId())
+                        .user(
+                                Article.User.builder()
+                                        .username(articleEntity.getUserEntity().getUsername())
+                                        .profileImage(articleEntity.getUserEntity().getProfileImage())
+                                        .build()
+                        )
+                        .title(articleEntity.getTitle())
+                        .thumbnail(articleEntity.getThumbnail())
+                        .content(articleEntity.getContent())
+                        .likeCount((long) articleEntity.getLikeEntityList().size())
+                        .isLikeClicked(
+                                articleEntity.getLikeEntityList()
+                                        .stream()
+                                        .anyMatch(likeEntity -> Objects.equals(likeEntity.getUserEntity().getId(), userEntity.getId()))
+                        )
+                        .createDate(articleEntity.getCreateDate())
+                        .build();
+            }
+
+            public static Article from(ArticleEntity articleEntity) {
+                return Article.builder()
+                        .id(articleEntity.getId())
+                        .user(
+                                Article.User.builder()
+                                        .username(articleEntity.getUserEntity().getUsername())
+                                        .profileImage(articleEntity.getUserEntity().getProfileImage())
+                                        .build()
+                        )
+                        .title(articleEntity.getTitle())
+                        .thumbnail(articleEntity.getThumbnail())
+                        .content(articleEntity.getContent())
+                        .likeCount((long) articleEntity.getLikeEntityList().size())
+                        .isLikeClicked(false)
+                        .createDate(articleEntity.getCreateDate())
+                        .build();
+            }
+
+            @Getter
+            @Builder
+            @NoArgsConstructor
+            @AllArgsConstructor
+            public static class User {
+                private String username;
+                private String profileImage;
+            }
+
+        }
+
+    }
+
+}

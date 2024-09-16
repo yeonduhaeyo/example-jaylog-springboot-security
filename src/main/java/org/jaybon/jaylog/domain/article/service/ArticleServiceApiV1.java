@@ -35,17 +35,18 @@ public class ArticleServiceApiV1 {
 
     public ResponseEntity<ResDTO<ResArticleGetByIdDTOApiV1>> getByIdAndCustomUserDetails(Long id, CustomUserDetails customUserDetails) {
         ArticleEntity articleEntity = UtilFunction.getArticleEntityBy(articleRepository, id);
-        long likeCount = likeRepository.countByArticleEntity_Id(articleEntity.getId());
-        boolean isLikeClicked = false;
+        ResArticleGetByIdDTOApiV1 resArticleGetByIdDTOApiV1;
         if (customUserDetails != null) {
             UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
-            isLikeClicked = likeRepository.countByUserEntity_IdAndArticleEntity_Id(userEntity.getId(), articleEntity.getId()) != 0;
+            resArticleGetByIdDTOApiV1 = ResArticleGetByIdDTOApiV1.of(articleEntity, userEntity);
+        } else {
+            resArticleGetByIdDTOApiV1 = ResArticleGetByIdDTOApiV1.of(articleEntity);
         }
         return new ResponseEntity<>(
                 ResDTO.<ResArticleGetByIdDTOApiV1>builder()
                         .code(Constants.ResCode.OK)
                         .message("게시글 조회에 성공했습니다.")
-                        .data(ResArticleGetByIdDTOApiV1.of(articleEntity, likeCount, isLikeClicked))
+                        .data(resArticleGetByIdDTOApiV1)
                         .build(),
                 HttpStatus.OK
         );
