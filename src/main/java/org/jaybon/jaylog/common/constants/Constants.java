@@ -7,7 +7,6 @@ public class Constants {
         public static final int ACCESS_EXPIRATION_TIME = 30 * 60 * 1000; // 만료기간 30분 (1/1000초)
         public static final int REFRESH_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 만료기간 7일 (1/1000초)
         public static final String ACCESS_HEADER_NAME = "Authorization";
-        public static final String REFRESH_HEADER_NAME = "Refresh";
         public static final String HEADER_PREFIX = "Bearer ";
     }
 

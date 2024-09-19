@@ -8,7 +8,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.like.entity.LikeEntity;
-import org.jaybon.jaylog.model.user.constraint.UserLoginType;
+import org.jaybon.jaylog.model.user.constraint.LoginType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,8 +33,8 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "simple_desc")
-    private String simpleDesc;
+    @Column(name = "simple_description")
+    private String simpleDescription;
 
     @Column(name = "profile_image", length = 1024)
     @ColumnDefault("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
@@ -42,7 +42,7 @@ public class UserEntity {
 
     @Column(name = "login_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserLoginType loginType;
+    private LoginType loginType;
 
     @Column(name = "jwt_validator", nullable = false)
     private Long jwtValidator;
@@ -67,5 +67,17 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     private List<LikeEntity> likeEntityList;
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setSimpleDescription(String simpleDescription) {
+        this.simpleDescription = simpleDescription;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jaybon.jaylog.model.user.constraint.LoginType;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
         private Long id;
         private String username;
         private String password;
-        private String loginType;
+        private LoginType loginType;
         private Long jwtValidator;
         private List<String> roleList;
 
@@ -41,12 +42,12 @@ public class CustomUserDetails implements UserDetails {
                     .id(userEntity.getId())
                     .username(userEntity.getUsername())
                     .password(userEntity.getPassword())
-                    .loginType(userEntity.getLoginType().toString())
+                    .loginType(userEntity.getLoginType())
                     .jwtValidator(userEntity.getJwtValidator())
                     .roleList(
                             userEntity.getUserRoleEntityList()
                                     .stream()
-                                    .map(userRoleEntity -> userRoleEntity.getRole())
+                                    .map(userRoleEntity -> userRoleEntity.getRole().toString())
                                     .toList())
                     .build();
         }

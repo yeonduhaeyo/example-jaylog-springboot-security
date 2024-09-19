@@ -1,6 +1,7 @@
 package org.jaybon.jaylog.domain.article.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.jaybon.jaylog.common.dto.ResDTO;
 import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
@@ -11,10 +12,12 @@ import org.jaybon.jaylog.domain.article.dto.res.ResArticlePostLikeByIdDTOApiV1;
 import org.jaybon.jaylog.domain.article.service.ArticleServiceApiV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/v1/article")
 public class ArticleControllerApiV1 {
 
@@ -31,7 +34,7 @@ public class ArticleControllerApiV1 {
     @PostMapping
     public ResponseEntity<ResDTO<Object>> postBy(
             @Valid @RequestBody ReqArticlePostDTOApiV1 dto,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return articleServiceApiV1.postBy(dto, customUserDetails);
     }
@@ -40,7 +43,7 @@ public class ArticleControllerApiV1 {
     public ResponseEntity<ResDTO<Object>> putBy(
             @PathVariable Long id,
             @Valid @RequestBody ReqArticlePutDTOApiV1 dto,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return articleServiceApiV1.putBy(id, dto, customUserDetails);
     }
@@ -48,7 +51,7 @@ public class ArticleControllerApiV1 {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> deleteById(
             @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return articleServiceApiV1.deleteById(id, customUserDetails);
     }
@@ -56,7 +59,7 @@ public class ArticleControllerApiV1 {
     @PostMapping("/{id}/like")
     public ResponseEntity<ResDTO<ResArticlePostLikeByIdDTOApiV1>> postLikeByIdAndCustomUserDetails(
             @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return articleServiceApiV1.postLikeByIdAndCustomUserDetails(id, customUserDetails);
     }

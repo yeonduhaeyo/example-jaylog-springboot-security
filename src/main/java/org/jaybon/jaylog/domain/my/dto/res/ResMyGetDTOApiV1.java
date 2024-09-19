@@ -1,33 +1,57 @@
-package org.jaybon.jaylog.domain.article.dto.res;
+package org.jaybon.jaylog.domain.my.dto.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jaybon.jaylog.common.constants.Constants;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResArticleGetByIdDTOApiV1 {
+public class ResMyGetDTOApiV1 {
 
-    private Article article;
+    private LoginUser loginUser;
+    private List<Article> myArticleList;
+    private List<Article> likeArticleList;
 
-    public static ResArticleGetByIdDTOApiV1 of(ArticleEntity articleEntity, UserEntity loginUserEntity) {
-        return ResArticleGetByIdDTOApiV1.builder()
-                .article(Article.from(articleEntity, loginUserEntity))
+    public static ResMyGetDTOApiV1 of(
+            UserEntity loginUserEntity,
+            List<ArticleEntity> myArticleEntityList,
+            List<ArticleEntity> likeArticleEntityList
+    ) {
+        return ResMyGetDTOApiV1.builder()
+                .loginUser(LoginUser.from(loginUserEntity))
+                .myArticleList(Article.from(myArticleEntityList, loginUserEntity))
+                .likeArticleList(Article.from(likeArticleEntityList, loginUserEntity))
                 .build();
     }
 
-    public static ResArticleGetByIdDTOApiV1 of(ArticleEntity articleEntity) {
-        return ResArticleGetByIdDTOApiV1.builder()
-                .article(Article.from(articleEntity))
-                .build();
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginUser {
+
+        private String username;
+        private String simpleDescription;
+        private String profileImage;
+
+        public static LoginUser from(UserEntity loginUserEntity) {
+            return LoginUser.builder()
+                    .username(loginUserEntity.getUsername())
+                    .simpleDescription(loginUserEntity.getSimpleDescription())
+                    .profileImage(loginUserEntity.getProfileImage())
+                    .build();
+        }
+
     }
 
     @Getter
@@ -40,10 +64,16 @@ public class ResArticleGetByIdDTOApiV1 {
         private Writer writer;
         private String title;
         private String thumbnail;
-        private String content;
+        private String summary;
         private Long likeCount;
         private Boolean isLikeClicked;
         private LocalDateTime createDate;
+
+        public static List<Article> from(List<ArticleEntity> articleEntityList, UserEntity loginUserEntity) {
+            return articleEntityList.stream()
+                    .map(articleEntity -> Article.from(articleEntity, loginUserEntity))
+                    .toList();
+        }
 
         public static Article from(ArticleEntity articleEntity, UserEntity loginUserEntity) {
             Writer writer;
@@ -66,7 +96,11 @@ public class ResArticleGetByIdDTOApiV1 {
                     .writer(writer)
                     .title(articleEntity.getTitle())
                     .thumbnail(articleEntity.getThumbnail())
-                    .content(articleEntity.getContent())
+                    .summary(
+                            articleEntity.getContent()
+                                    .replaceAll(Constants.Regex.MARKDOWN, "")
+                                    .substring(0, 151)
+                    )
                     .likeCount((long) articleEntity.getLikeEntityList().size())
                     .isLikeClicked(isLikeClicked)
                     .createDate(articleEntity.getCreateDate())
@@ -91,7 +125,11 @@ public class ResArticleGetByIdDTOApiV1 {
                     .writer(writer)
                     .title(articleEntity.getTitle())
                     .thumbnail(articleEntity.getThumbnail())
-                    .content(articleEntity.getContent())
+                    .summary(
+                            articleEntity.getContent()
+                                    .replaceAll(Constants.Regex.MARKDOWN, "")
+                                    .substring(0, 151)
+                    )
                     .likeCount((long) articleEntity.getLikeEntityList().size())
                     .isLikeClicked(false)
                     .createDate(articleEntity.getCreateDate())

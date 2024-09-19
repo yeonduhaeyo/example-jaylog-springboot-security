@@ -8,6 +8,7 @@ import org.jaybon.jaylog.config.security.auth.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +30,6 @@ public class SecurityConfig {
     String activeProfile;
 
     private final CustomUserDetailsService customUserDetailsService;
-
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
@@ -46,11 +46,6 @@ public class SecurityConfig {
             httpSecurity.headers(config -> config
                     .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())
             );
-
-//        httpSecurity.authorizeHttpRequests(config -> config
-//                .requestMatchers(PathRequest.toH2Console())
-//                .permitAll()
-//        );
 
             httpSecurity.authorizeHttpRequests(config -> config
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"))
@@ -85,22 +80,21 @@ public class SecurityConfig {
                 )
                 .permitAll()
                 .requestMatchers(
-                        mvcMatcherBuilder.pattern("/js/admin*.js"),
-                        mvcMatcherBuilder.pattern("/temp/**")
+                        mvcMatcherBuilder.pattern("/js/admin*.js")
                 )
                 .hasRole("ADMIN")
         );
 
         httpSecurity.authorizeHttpRequests(config -> config
                 .requestMatchers(
-                        mvcMatcherBuilder.pattern("/auth/**"),
                         mvcMatcherBuilder.pattern("/v*/auth/**"),
+                        mvcMatcherBuilder.pattern("/v*/main/**"),
+                        mvcMatcherBuilder.pattern(HttpMethod.GET, "/v*/article/**"),
                         mvcMatcherBuilder.pattern("/docs/**"),
                         mvcMatcherBuilder.pattern("/swagger-ui/**")
                 )
                 .permitAll()
                 .requestMatchers(
-                        mvcMatcherBuilder.pattern("/admin/**"),
                         mvcMatcherBuilder.pattern("/v*/admin/**")
                 )
                 .hasRole("ADMIN")

@@ -3,6 +3,7 @@ package org.jaybon.jaylog.model.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.jaybon.jaylog.model.user.constraint.RoleType;
 
 import java.time.LocalDateTime;
 
@@ -24,8 +25,9 @@ public class UserRoleEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id", updatable = false, nullable = false)
     private UserEntity userEntity;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 
     @Column(name = "create_date")
     @CreationTimestamp

@@ -16,8 +16,11 @@ import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostLoginDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostRefreshDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostLoginDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostRefreshDTOApiV1;
+import org.jaybon.jaylog.model.user.constraint.RoleType;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
+import org.jaybon.jaylog.model.user.entity.UserRoleEntity;
 import org.jaybon.jaylog.model.user.repository.UserRepository;
+import org.jaybon.jaylog.model.user.repository.UserRoleRepository;
 import org.jaybon.jaylog.util.UtilFunction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,7 @@ import java.util.Optional;
 public class AuthServiceApiV1 {
 
     private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -53,7 +57,12 @@ public class AuthServiceApiV1 {
                 .password(passwordEncoder.encode(dto.getUser().getPassword()))
                 .createDate(LocalDateTime.now())
                 .build();
+        UserRoleEntity userRoleEntityForSaving = UserRoleEntity.builder()
+                .userEntity(userEntityForSaving)
+                .role(RoleType.USER)
+                .build();
         userRepository.save(userEntityForSaving);
+        userRoleRepository.save(userRoleEntityForSaving);
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(0)
