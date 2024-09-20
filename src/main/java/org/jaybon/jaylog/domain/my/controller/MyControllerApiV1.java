@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.jaybon.jaylog.common.dto.ResDTO;
 import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
-import org.jaybon.jaylog.domain.my.dto.req.ReqMyPutDTOApiV1;
+import org.jaybon.jaylog.domain.my.dto.req.ReqMyPutInfoDTOApiV1;
 import org.jaybon.jaylog.domain.my.dto.res.ResMyGetDTOApiV1;
 import org.jaybon.jaylog.domain.my.service.MyServiceApiV1;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +28,16 @@ public class MyControllerApiV1 {
         return myServiceApiV1.getBy(customUserDetails);
     }
 
-    @PutMapping
+    @GetMapping("/info")
+    public ResponseEntity<ResDTO<Object>> getInfoBy(
+            @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return myServiceApiV1.getInfoBy(customUserDetails);
+    }
+
+    @PutMapping("/info")
     public ResponseEntity<ResDTO<Object>> putBy(
-            @Valid @RequestBody ReqMyPutDTOApiV1 dto,
+            @Valid @RequestBody ReqMyPutInfoDTOApiV1 dto,
             @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return myServiceApiV1.putBy(dto, customUserDetails);

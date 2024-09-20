@@ -1,11 +1,9 @@
 package org.jaybon.jaylog.model.user.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.like.entity.LikeEntity;
 import org.jaybon.jaylog.model.user.constraint.LoginType;
@@ -15,6 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "`USER`")
+@DynamicInsert
+@DynamicUpdate
 @Getter
 @Builder
 @AllArgsConstructor
@@ -36,7 +36,7 @@ public class UserEntity {
     @Column(name = "simple_description")
     private String simpleDescription;
 
-    @Column(name = "profile_image", length = 1024)
+    @Column(name = "profile_image", length = 1024, nullable = false)
     @ColumnDefault("'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'")
     private String profileImage;
 

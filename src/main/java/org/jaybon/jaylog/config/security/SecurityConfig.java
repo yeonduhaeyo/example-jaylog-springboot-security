@@ -28,17 +28,24 @@ public class SecurityConfig {
     @Value("${spring.profiles.active}")
     String activeProfile;
 
-    private final CustomUserDetailsService customUserDetailsService;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
-        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(customUserDetailsService);
-
         if ("dev".equals(activeProfile)) {
+            httpSecurity.headers(config -> config
+                    .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())
+            );
+
+            httpSecurity.authorizeHttpRequests(config -> config
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"))
+                    .permitAll()
+            );
+        } else {
             httpSecurity.headers(config -> config
                     .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())
             );

@@ -1,12 +1,14 @@
 package org.jaybon.jaylog.domain.my.service;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.jaybon.jaylog.common.constants.Constants;
 import org.jaybon.jaylog.common.dto.ResDTO;
 import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
-import org.jaybon.jaylog.domain.my.dto.req.ReqMyPutDTOApiV1;
+import org.jaybon.jaylog.domain.my.dto.req.ReqMyPutInfoDTOApiV1;
 import org.jaybon.jaylog.domain.my.dto.res.ResMyGetDTOApiV1;
+import org.jaybon.jaylog.domain.my.dto.res.ResMyGetInfoDTOApiV1;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.like.entity.LikeEntity;
 import org.jaybon.jaylog.model.like.repository.LikeRepository;
@@ -36,7 +38,7 @@ public class MyServiceApiV1 {
         List<LikeEntity> myLikeEntityList = likeRepository.findByUserEntity_Id(userEntity.getId());
         List<ArticleEntity> likeArticleEntityList = myLikeEntityList
                 .stream()
-                .filter(likeEntity -> likeEntity.getArticleEntity().getDeleteDate() != null)
+                .filter(likeEntity -> likeEntity.getArticleEntity().getDeleteDate() == null)
                 .map(likeEntity -> likeEntity.getArticleEntity())
                 .toList();
         return new ResponseEntity<>(
@@ -49,7 +51,20 @@ public class MyServiceApiV1 {
         );
     }
 
-    public ResponseEntity<ResDTO<Object>> putBy(ReqMyPutDTOApiV1 dto, CustomUserDetails customUserDetails) {
+    public ResponseEntity<ResDTO<Object>> getInfoBy(@NotNull CustomUserDetails customUserDetails) {
+        UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
+        return new ResponseEntity<>(
+                ResDTO.builder()
+                        .code(Constants.ResCode.OK)
+                        .message("회원 정보 조회에 성공했습니다.")
+                        .data(ResMyGetInfoDTOApiV1.of(userEntity))
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResDTO<Object>> putBy(ReqMyPutInfoDTOApiV1 dto, CustomUserDetails customUserDetails) {
         UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
         dto.getUser().updateWith(userEntity, passwordEncoder);
         return new ResponseEntity<>(
@@ -60,4 +75,5 @@ public class MyServiceApiV1 {
                 HttpStatus.OK
         );
     }
+
 }

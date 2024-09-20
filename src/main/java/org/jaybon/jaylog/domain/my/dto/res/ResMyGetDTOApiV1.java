@@ -91,47 +91,16 @@ public class ResMyGetDTOApiV1 {
             boolean isLikeClicked = articleEntity.getLikeEntityList()
                     .stream()
                     .anyMatch(likeEntity -> Objects.equals(likeEntity.getUserEntity().getId(), loginUserEntity.getId()));
+            String contentWithoutMarkdown = articleEntity.getContent().replaceAll(Constants.Regex.MARKDOWN, "");
+            String summary = contentWithoutMarkdown.length() > 150 ? contentWithoutMarkdown.substring(0, 151) : contentWithoutMarkdown;
             return Article.builder()
                     .id(articleEntity.getId())
                     .writer(writer)
                     .title(articleEntity.getTitle())
                     .thumbnail(articleEntity.getThumbnail())
-                    .summary(
-                            articleEntity.getContent()
-                                    .replaceAll(Constants.Regex.MARKDOWN, "")
-                                    .substring(0, 151)
-                    )
+                    .summary(summary)
                     .likeCount((long) articleEntity.getLikeEntityList().size())
                     .isLikeClicked(isLikeClicked)
-                    .createDate(articleEntity.getCreateDate())
-                    .build();
-        }
-
-        public static Article from(ArticleEntity articleEntity) {
-            Writer writer;
-            if (Objects.isNull(articleEntity.getUserEntity().getDeleteDate())) {
-                writer = Writer.builder()
-                        .username(articleEntity.getUserEntity().getUsername())
-                        .profileImage(articleEntity.getUserEntity().getProfileImage())
-                        .build();
-            } else {
-                writer = Writer.builder()
-                        .username("탈퇴한 사용자")
-                        .profileImage("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
-                        .build();
-            }
-            return Article.builder()
-                    .id(articleEntity.getId())
-                    .writer(writer)
-                    .title(articleEntity.getTitle())
-                    .thumbnail(articleEntity.getThumbnail())
-                    .summary(
-                            articleEntity.getContent()
-                                    .replaceAll(Constants.Regex.MARKDOWN, "")
-                                    .substring(0, 151)
-                    )
-                    .likeCount((long) articleEntity.getLikeEntityList().size())
-                    .isLikeClicked(false)
                     .createDate(articleEntity.getCreateDate())
                     .build();
         }

@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReqMyPutDTOApiV1 {
+public class ReqMyPutInfoDTOApiV1 {
 
     @Valid
     @NotNull(message = "회원 정보를 입력해주세요.")

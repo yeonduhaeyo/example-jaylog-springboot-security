@@ -174,7 +174,7 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.AUTHENTICATION_EXCEPTION)
-                        .message("로그인이 필요한 서비스입니다.")
+                        .message(e.getMessage())
                         .build(),
                 HttpStatus.UNAUTHORIZED
         );

@@ -57,6 +57,7 @@ public class ArticleServiceApiV1 {
             ReqArticlePostDTOApiV1 dto,
             CustomUserDetails customUserDetails
     ) {
+        System.out.println("dto = " + dto);
         UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
         articleRepository.save(dto.getArticle().toEntityWith(userEntity));
         return new ResponseEntity<>(

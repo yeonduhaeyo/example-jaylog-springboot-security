@@ -16,6 +16,7 @@ import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostLoginDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostRefreshDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostLoginDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostRefreshDTOApiV1;
+import org.jaybon.jaylog.model.user.constraint.LoginType;
 import org.jaybon.jaylog.model.user.constraint.RoleType;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 import org.jaybon.jaylog.model.user.entity.UserRoleEntity;
@@ -55,6 +56,8 @@ public class AuthServiceApiV1 {
         UserEntity userEntityForSaving = UserEntity.builder()
                 .username(dto.getUser().getUsername())
                 .password(passwordEncoder.encode(dto.getUser().getPassword()))
+                .loginType(LoginType.DEFAULT)
+                .jwtValidator(0L)
                 .createDate(LocalDateTime.now())
                 .build();
         UserRoleEntity userRoleEntityForSaving = UserRoleEntity.builder()
@@ -76,11 +79,11 @@ public class AuthServiceApiV1 {
     public ResponseEntity<ResDTO<ResAuthPostLoginDTOApiV1>> loginBy(ReqAuthPostLoginDTOApiV1 dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUsernameAndDeleteDateIsNull(dto.getUser().getUsername());
         if (userEntityOptional.isEmpty()) {
-            throw new AuthenticationException("아이디를 정확히 입력해주세요.");
+            throw new BadRequestException("아이디를 정확히 입력해주세요.");
         }
         UserEntity userEntity = userEntityOptional.get();
         if (!passwordEncoder.matches(dto.getUser().getPassword(), userEntity.getPassword())) {
-            throw new AuthenticationException("비밀번호를 정확히 입력해주세요.");
+            throw new BadRequestException("비밀번호를 정확히 입력해주세요.");
         }
         CustomUserDetails customUserDetails = CustomUserDetails.of(userEntityOptional.get());
         String accessJwt = UtilFunction.generateAccessJwtBy(customUserDetails);
@@ -95,7 +98,6 @@ public class AuthServiceApiV1 {
         );
     }
 
-    @Transactional
     public ResponseEntity<ResDTO<ResAuthPostRefreshDTOApiV1>> refreshBy(ReqAuthPostRefreshDTOApiV1 dto) {
         DecodedJWT decodedRefreshJWT;
         try {

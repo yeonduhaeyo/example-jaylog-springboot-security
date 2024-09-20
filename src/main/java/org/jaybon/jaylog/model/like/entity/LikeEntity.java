@@ -3,6 +3,8 @@ package org.jaybon.jaylog.model.like.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "`LIKE`")
+@DynamicInsert
+@DynamicUpdate
 @Getter
 @Builder
 @AllArgsConstructor

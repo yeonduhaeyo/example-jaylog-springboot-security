@@ -4,26 +4,27 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.jaybon.jaylog.common.constants.Constants;
+import org.jaybon.jaylog.common.dto.ResDTO;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
+@RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService customUserDetailsService;
-
-    public JwtAuthorizationFilter(
-            CustomUserDetailsService customUserDetailsService
-    ) {
-        this.customUserDetailsService = customUserDetailsService;
-    }
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -46,7 +47,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(decodedAccessJWT.getClaim("username").asString());
+        CustomUserDetails customUserDetails;
+        try {
+            customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(decodedAccessJWT.getClaim("username").asString());
+        } catch (Exception e) {
+            chain.doFilter(request, response);
+            return;
+        }
         if (customUserDetails.getUser().getJwtValidator() > decodedAccessJWT.getClaim("timestamp").asLong()) {
             chain.doFilter(request, response);
             return;

@@ -24,7 +24,7 @@ public class MainControllerApiV1 {
 
     @GetMapping
     public ResponseEntity<ResDTO<ResMainGetDTOApiV1>> getBy(
-            @RequestParam String searchValue,
+            @RequestParam(required = false) String searchValue,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
