@@ -9,7 +9,7 @@ import org.jaybon.jaylog.model.user.entity.UserEntity;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "LIKE")
+@Table(name = "`LIKE`")
 @Getter
 @Builder
 @AllArgsConstructor

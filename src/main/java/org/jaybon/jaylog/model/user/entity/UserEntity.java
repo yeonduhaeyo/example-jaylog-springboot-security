@@ -37,7 +37,7 @@ public class UserEntity {
     private String simpleDescription;
 
     @Column(name = "profile_image", length = 1024)
-    @ColumnDefault("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
+    @ColumnDefault("'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'")
     private String profileImage;
 
     @Column(name = "login_type", nullable = false)

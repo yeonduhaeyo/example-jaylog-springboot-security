@@ -13,6 +13,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
     Page<ArticleEntity> findByDeleteDateIsNull(Pageable pageable);
 
-    Page<ArticleEntity> findByTitleContainingOrContentContainingAndDeleteDateIsNull(String searchValue, Pageable pageable);
+    Page<ArticleEntity> findByTitleContainingOrContentContainingAndDeleteDateIsNull(String title, String content, Pageable pageable);
 
 }

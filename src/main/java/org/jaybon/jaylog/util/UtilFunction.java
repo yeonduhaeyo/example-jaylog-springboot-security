@@ -64,7 +64,7 @@ public class UtilFunction {
                 .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.ACCESS_EXPIRATION_TIME))
                 .withClaim("username", customUserDetails.getUsername())
                 .withClaim("roleList", customUserDetails.getUser().getRoleList())
-                .withClaim("loginType", customUserDetails.getUser().getLoginType())
+                .withClaim("loginType", customUserDetails.getUser().getLoginType().toString())
                 .withClaim("timestamp", Timestamp.valueOf(LocalDateTime.now()).getTime())
                 .sign(Algorithm.HMAC512(Constants.Jwt.SECRET));
     }

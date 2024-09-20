@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,10 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
-        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(
-                httpSecurity.getSharedObject(AuthenticationManager.class),
-                customUserDetailsService
-        );
+        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(customUserDetailsService);
 
         if ("dev".equals(activeProfile)) {
             httpSecurity.headers(config -> config
@@ -63,7 +59,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        httpSecurity.addFilterAt(jwtAuthorizationFilter, BasicAuthenticationFilter.class);
+        httpSecurity.addFilterAfter(jwtAuthorizationFilter, BasicAuthenticationFilter.class);
 
         httpSecurity.exceptionHandling(config -> config
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
