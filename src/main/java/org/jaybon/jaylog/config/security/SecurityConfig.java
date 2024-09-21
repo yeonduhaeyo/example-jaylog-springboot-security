@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -37,24 +38,18 @@ public class SecurityConfig {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
         if ("dev".equals(activeProfile)) {
-            httpSecurity.headers(config -> config
-                    .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())
-            );
-
             httpSecurity.authorizeHttpRequests(config -> config
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"))
                     .permitAll()
             );
         } else {
-            httpSecurity.headers(config -> config
-                    .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())
-            );
-
             httpSecurity.authorizeHttpRequests(config -> config
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"))
                     .hasRole("ADMIN")
             );
         }
+
+        httpSecurity.headers(config -> config.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
 
         httpSecurity.csrf(config -> config.disable());
 
@@ -66,7 +61,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        httpSecurity.addFilterAfter(jwtAuthorizationFilter, BasicAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.exceptionHandling(config -> config
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -75,14 +70,6 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(config -> config
                 .requestMatchers(
-                        mvcMatcherBuilder.pattern("/css/**"),
-                        mvcMatcherBuilder.pattern("/js/**"),
-                        mvcMatcherBuilder.pattern("/assets/**"),
-                        mvcMatcherBuilder.pattern("/springdoc/**"),
-                        mvcMatcherBuilder.pattern("/favicon.ico")
-                )
-                .permitAll()
-                .requestMatchers(
                         mvcMatcherBuilder.pattern("/js/admin*.js")
                 )
                 .hasRole("ADMIN")
@@ -90,11 +77,11 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(config -> config
                 .requestMatchers(
+                        mvcMatcherBuilder.pattern("/docs/**"),
+                        mvcMatcherBuilder.pattern("/swagger-ui/**"),
                         mvcMatcherBuilder.pattern("/v*/auth/**"),
                         mvcMatcherBuilder.pattern("/v*/main/**"),
-                        mvcMatcherBuilder.pattern(HttpMethod.GET, "/v*/article/**"),
-                        mvcMatcherBuilder.pattern("/docs/**"),
-                        mvcMatcherBuilder.pattern("/swagger-ui/**")
+                        mvcMatcherBuilder.pattern(HttpMethod.GET, "/v*/article/**")
                 )
                 .permitAll()
                 .requestMatchers(
