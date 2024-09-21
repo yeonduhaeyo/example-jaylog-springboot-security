@@ -121,7 +121,7 @@ public class AuthServiceApiV1 {
         return new ResponseEntity<>(
                 ResDTO.<ResAuthPostRefreshDTOApiV1>builder()
                         .code(0)
-                        .message("토큰 갱신에 성공하였습니다.")
+                        .message("토큰 재발급에 성공하였습니다.")
                         .data(ResAuthPostRefreshDTOApiV1.of(accessJwt, refreshJwt))
                         .build(),
                 HttpStatus.OK

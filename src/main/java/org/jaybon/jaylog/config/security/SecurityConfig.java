@@ -70,6 +70,14 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(config -> config
                 .requestMatchers(
+                        mvcMatcherBuilder.pattern("/css/**"),
+                        mvcMatcherBuilder.pattern("/js/**"),
+                        mvcMatcherBuilder.pattern("/assets/**"),
+                        mvcMatcherBuilder.pattern("/springdoc/**"),
+                        mvcMatcherBuilder.pattern("/favicon.ico")
+                )
+                .permitAll()
+                .requestMatchers(
                         mvcMatcherBuilder.pattern("/js/admin*.js")
                 )
                 .hasRole("ADMIN")

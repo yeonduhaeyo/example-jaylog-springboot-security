@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   thymeleaf:
     cache: false
@@ -13,8 +16,8 @@ spring:
   sql:
     init:
       encoding: UTF-8
-      #      schema-locations: classpath:h2/schema.sql
-      #      dataLocations: classpath:h2/data.sql
+#      schema-locations: classpath:h2/schema.sql
+      dataLocations: classpath:h2/data.sql
       mode: always
   jpa:
     defer-datasource-initialization: true
@@ -35,14 +38,14 @@ spring:
     multipart:
       max-request-size: 10MB
       max-file-size: 10MB
-#
-#springdoc:
-#  swagger-ui:
-#    enabled: true
-#    path: /docs
-#    url: /springdoc/openapi3.json
-#    operations-sorter: alpha
-#    tags-sorter: alpha
-#  api-docs:
-#    enabled: true
-#    path: /docs/json
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /docs
+    url: /springdoc/openapi3.json
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /docs/json
