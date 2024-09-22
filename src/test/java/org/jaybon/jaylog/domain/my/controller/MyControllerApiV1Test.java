@@ -171,6 +171,7 @@ public class MyControllerApiV1Test {
                                                 multipart/form-data 타입으로 요청이 가능합니다.
                                                 
                                                 파일 profileImage
+                                                (jpg, jpeg, png, gif 확장자만 가능합니다.)
                                                 
                                                 문자열 password, simpleDescription
                                                 
