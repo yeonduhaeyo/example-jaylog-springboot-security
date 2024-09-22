@@ -80,4 +80,7 @@ public class UserEntity {
         this.profileImage = profileImage;
     }
 
+    public void setJwtValidator(Long jwtValidator) {
+        this.jwtValidator = jwtValidator;
+    }
 }

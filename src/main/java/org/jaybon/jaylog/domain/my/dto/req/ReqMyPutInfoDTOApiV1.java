@@ -1,11 +1,16 @@
 package org.jaybon.jaylog.domain.my.dto.req;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 import org.jaybon.jaylog.util.UtilFunction;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -21,15 +26,22 @@ public class ReqMyPutInfoDTOApiV1 {
     private MultipartFile profileImage;
 
     public void updateWith(PasswordEncoder passwordEncoder, UserEntity userEntity) {
+        boolean isInvalid = false;
         if (password != null) {
+            isInvalid = true;
             String passwordByEncoding = passwordEncoder.encode(this.password);
             userEntity.setPassword(passwordByEncoding);
         }
         if (simpleDescription != null) {
+            isInvalid = true;
             userEntity.setSimpleDescription(simpleDescription);
         }
         if (profileImage != null && !profileImage.isEmpty()) {
+            isInvalid = true;
             userEntity.setProfileImage(UtilFunction.convertImageToBase64(profileImage));
+        }
+        if (isInvalid) {
+            userEntity.setJwtValidator(Timestamp.valueOf(LocalDateTime.now()).getTime());
         }
     }
 

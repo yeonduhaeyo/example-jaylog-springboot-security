@@ -141,6 +141,10 @@ public class MyControllerApiV1Test {
                                                 
                                                 문자열 password, simpleDescription
                                                 
+                                                3가지 중 하나라도 변경 되면 jwtValidator가 갱신됩니다.
+                                                
+                                                접속 중이던 기타 기기에서 로그아웃 됩니다.
+                                                
                                                 """)
                                         .build()
                                 )
