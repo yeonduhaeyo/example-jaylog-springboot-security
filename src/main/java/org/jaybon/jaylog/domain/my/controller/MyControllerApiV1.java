@@ -32,13 +32,6 @@ public class MyControllerApiV1 {
         return myServiceApiV1.getBy(customUserDetails);
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<ResDTO<Object>> getInfoBy(
-            @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
-    ) {
-        return myServiceApiV1.getInfoBy(customUserDetails);
-    }
-
     @PutMapping("/info")
     public ResponseEntity<ResDTO<Object>> putBy(
             ReqMyPutInfoDTOApiV1 dto,

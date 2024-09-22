@@ -33,6 +33,8 @@ public class CustomUserDetails implements UserDetails {
         private Long id;
         private String username;
         private String password;
+        private String simpleDescription;
+        private String profileImage;
         private LoginType loginType;
         private Long jwtValidator;
         private List<String> roleList;
@@ -42,6 +44,8 @@ public class CustomUserDetails implements UserDetails {
                     .id(userEntity.getId())
                     .username(userEntity.getUsername())
                     .password(userEntity.getPassword())
+                    .simpleDescription(userEntity.getSimpleDescription())
+                    .profileImage(userEntity.getProfileImage())
                     .loginType(userEntity.getLoginType())
                     .jwtValidator(userEntity.getJwtValidator())
                     .roleList(

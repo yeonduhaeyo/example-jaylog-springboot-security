@@ -1,14 +1,12 @@
 package org.jaybon.jaylog.domain.my.service;
 
 
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.jaybon.jaylog.common.constants.Constants;
 import org.jaybon.jaylog.common.dto.ResDTO;
 import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
 import org.jaybon.jaylog.domain.my.dto.req.ReqMyPutInfoDTOApiV1;
 import org.jaybon.jaylog.domain.my.dto.res.ResMyGetDTOApiV1;
-import org.jaybon.jaylog.domain.my.dto.res.ResMyGetInfoDTOApiV1;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.like.entity.LikeEntity;
 import org.jaybon.jaylog.model.like.repository.LikeRepository;
@@ -20,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -47,18 +44,6 @@ public class MyServiceApiV1 {
                         .code(Constants.ResCode.OK)
                         .message("마이페이지 조회에 성공했습니다.")
                         .data(ResMyGetDTOApiV1.of(userEntity, myArticleEntityList, likeArticleEntityList))
-                        .build(),
-                HttpStatus.OK
-        );
-    }
-
-    public ResponseEntity<ResDTO<Object>> getInfoBy(@NotNull CustomUserDetails customUserDetails) {
-        UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
-        return new ResponseEntity<>(
-                ResDTO.builder()
-                        .code(Constants.ResCode.OK)
-                        .message("회원 정보 조회에 성공했습니다.")
-                        .data(ResMyGetInfoDTOApiV1.of(userEntity))
                         .build(),
                 HttpStatus.OK
         );

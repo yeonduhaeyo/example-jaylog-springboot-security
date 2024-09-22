@@ -85,8 +85,10 @@ public class UtilFunction {
                 .withSubject("accessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.ACCESS_EXPIRATION_TIME))
                 .withClaim("username", customUserDetails.getUsername())
-                .withClaim("roleList", customUserDetails.getUser().getRoleList())
+                .withClaim("simpleDescription", customUserDetails.getUser().getSimpleDescription())
+                .withClaim("profileImage", customUserDetails.getUser().getProfileImage())
                 .withClaim("loginType", customUserDetails.getUser().getLoginType().toString())
+                .withClaim("roleList", customUserDetails.getUser().getRoleList())
                 .withClaim("timestamp", Timestamp.valueOf(LocalDateTime.now()).getTime())
                 .sign(Algorithm.HMAC512(Constants.Jwt.SECRET));
     }

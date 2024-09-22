@@ -89,40 +89,6 @@ public class MyControllerApiV1Test {
     }
 
     @Test
-    public void testMyGetInfoSuccess() throws Exception {
-        ResDTO<ResAuthPostLoginDTOApiV1> resDto = objectMapper.readValue(
-                login().getResponse().getContentAsString(),
-                new TypeReference<>() {
-                }
-        );
-        mockMvc.perform(
-                        RestDocumentationRequestBuilders.get("/v1/my/info")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + resDto.getData().getAccessJwt())
-                )
-                .andExpectAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.jsonPath("code").value(Constants.ResCode.OK)
-                )
-                .andDo(
-                        document("MY 인포 조회 성공",
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                resource(ResourceSnippetParameters.builder()
-                                        .tag("MY v1")
-                                        .summary("MY 인포 조회")
-                                        .description("""
-                                                ## MY 인포 조회 엔드포인트 입니다.
-                                                
-                                                ---
-                                                
-                                                """)
-                                        .build()
-                                )
-                        )
-                );
-    }
-
-    @Test
     public void testMyPutInfoSuccess() throws Exception {
         ResDTO<ResAuthPostLoginDTOApiV1> resDto = objectMapper.readValue(
                 login().getResponse().getContentAsString(),

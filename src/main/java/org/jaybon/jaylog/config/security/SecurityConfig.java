@@ -18,7 +18,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +37,28 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
+    CorsConfigurationSource corsConfigurationSource() {
+        return request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedHeaders(Collections.singletonList("*"));
+            config.setAllowedMethods(Collections.singletonList("*"));
+            config.setAllowedOriginPatterns(List.of(
+                    "http://127.0.0.1:80",
+                    "http://127.0.0.1:3000",
+                    "http://127.0.0.1:3001",
+                    "http://127.0.0.1:3002",
+                    "http://127.0.0.1:5173",
+                    "http://127.0.0.1:5174",
+                    "http://127.0.0.1:5175",
+                    "http://127.0.0.1:5500",
+                    "http://127.0.0.1:5501",
+                    "http://127.0.0.1:5502"
+            ));
+            config.setAllowCredentials(true);
+            return config;
+        };
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
@@ -50,6 +77,8 @@ public class SecurityConfig {
         }
 
         httpSecurity.headers(config -> config.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
+
+        httpSecurity.cors(config -> config.configurationSource(corsConfigurationSource()));
 
         httpSecurity.csrf(config -> config.disable());
 

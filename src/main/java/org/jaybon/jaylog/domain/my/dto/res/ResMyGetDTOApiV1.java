@@ -18,7 +18,6 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ResMyGetDTOApiV1 {
 
-    private LoginUser loginUser;
     private List<Article> myArticleList;
     private List<Article> likeArticleList;
 
@@ -28,30 +27,9 @@ public class ResMyGetDTOApiV1 {
             List<ArticleEntity> likeArticleEntityList
     ) {
         return ResMyGetDTOApiV1.builder()
-                .loginUser(LoginUser.from(loginUserEntity))
                 .myArticleList(Article.from(myArticleEntityList, loginUserEntity))
                 .likeArticleList(Article.from(likeArticleEntityList, loginUserEntity))
                 .build();
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class LoginUser {
-
-        private String username;
-        private String simpleDescription;
-        private String profileImage;
-
-        public static LoginUser from(UserEntity loginUserEntity) {
-            return LoginUser.builder()
-                    .username(loginUserEntity.getUsername())
-                    .simpleDescription(loginUserEntity.getSimpleDescription())
-                    .profileImage(loginUserEntity.getProfileImage())
-                    .build();
-        }
-
     }
 
     @Getter

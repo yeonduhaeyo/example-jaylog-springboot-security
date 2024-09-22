@@ -2,7 +2,7 @@
 INSERT INTO
     `USER` (id, username, password, simple_description, profile_image, login_type, jwt_validator, create_date, update_date, delete_date)
 VALUES
-    (1,'admin', '$2a$12$HCVYl0wt61JgzeezktCu4eEQN2sj1Q35iexD9Auhuo75NFDePRhWi', null, 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', 'DEFAULT', 0, CURRENT_TIMESTAMP, NULL, NULL),
+    (1,'admin', '$2a$12$/w0QNI2aBuSBzyQS.dKQDefH8b2u2JF8e7Jgd.wySld3H8DE8WKzC', null, 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', 'DEFAULT', 0, CURRENT_TIMESTAMP, NULL, NULL),
     (2, 'temp1', '$2a$12$HCVYl0wt61JgzeezktCu4eEQN2sj1Q35iexD9Auhuo75NFDePRhWi', null, 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', 'DEFAULT', 0, CURRENT_TIMESTAMP, NULL, NULL),
     (3, 'temp2', '$2a$12$HCVYl0wt61JgzeezktCu4eEQN2sj1Q35iexD9Auhuo75NFDePRhWi', null, 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', 'DEFAULT', 0, CURRENT_TIMESTAMP, NULL, NULL);
 
