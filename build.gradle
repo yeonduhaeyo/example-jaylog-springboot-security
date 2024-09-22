@@ -65,15 +65,13 @@ compileJava {
 }
 
 postman {
-//    baseUrl = 'https://실서버도메인'
-	baseUrl = 'https://localhost:8080'
+	baseUrl = 'https://jaylogapi.jaybon.org'
 	title = 'TODO API'
 	version = '1.0.0'
 }
 
 openapi3 {
-//    server = 'https://실서버도메인'
-	server = 'http://localhost:8080'
+	servers = [ {url = 'https://jaylogapi.jaybon.org'}, {url = 'http://localhost' } ]
 	title = 'TODO API'
 	description = ''
 	version = '1.0.0'

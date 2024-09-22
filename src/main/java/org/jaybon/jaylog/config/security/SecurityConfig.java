@@ -44,6 +44,11 @@ public class SecurityConfig {
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowedOriginPatterns(List.of(
+                    "https://jaylogapi.jaybon.org",
+                    "https://jaylogapi.jaybon.org:443",
+                    "http://43.203.227.240",
+                    "http://43.203.227.240:80",
+                    "http://127.0.0.1",
                     "http://127.0.0.1:80",
                     "http://127.0.0.1:3000",
                     "http://127.0.0.1:3001",
