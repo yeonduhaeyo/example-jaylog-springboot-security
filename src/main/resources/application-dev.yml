@@ -1,5 +1,9 @@
 server:
   port: 80
+  max-http-request-header-size: 10MB
+  compression:
+      enabled: true
+
 
 spring:
   thymeleaf:
