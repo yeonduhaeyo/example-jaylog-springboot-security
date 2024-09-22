@@ -54,6 +54,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
+        if (!"accessJwt".equals(decodedAccessJWT.getSubject())){
+            chain.doFilter(request, response);
+            return;
+        }
         if (customUserDetails.getUser().getJwtValidator() > decodedAccessJWT.getClaim("timestamp").asLong()) {
             chain.doFilter(request, response);
             return;

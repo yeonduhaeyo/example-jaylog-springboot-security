@@ -82,7 +82,7 @@ public class UtilFunction {
 
     public static String generateAccessJwtBy(CustomUserDetails customUserDetails) {
         return JWT.create()
-                .withSubject("accessToken")
+                .withSubject("accessJwt")
                 .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.ACCESS_EXPIRATION_TIME))
                 .withClaim("username", customUserDetails.getUsername())
                 .withClaim("simpleDescription", customUserDetails.getUser().getSimpleDescription())
@@ -95,7 +95,7 @@ public class UtilFunction {
 
     public static String generateRefreshJwtBy(CustomUserDetails customUserDetails) {
         return JWT.create()
-                .withSubject("refreshToken")
+                .withSubject("refreshJwt")
                 .withExpiresAt(new Date(System.currentTimeMillis() + Constants.Jwt.REFRESH_EXPIRATION_TIME))
                 .withClaim("username", customUserDetails.getUsername())
                 .withClaim("timestamp", Timestamp.valueOf(LocalDateTime.now()).getTime())

@@ -112,6 +112,9 @@ public class AuthServiceApiV1 {
             throw new AuthenticationException("존재하지 않는 사용자입니다.");
         }
         UserEntity userEntity = userEntityOptional.get();
+        if (!"refreshJwt".equals(decodedRefreshJWT.getSubject())) {
+            throw new AuthenticationException("유효하지 않은 토큰입니다.");
+        }
         if (userEntity.getJwtValidator() > decodedRefreshJWT.getClaim("timestamp").asLong()) {
             throw new AuthenticationException("유효하지 않은 토큰입니다.");
         }

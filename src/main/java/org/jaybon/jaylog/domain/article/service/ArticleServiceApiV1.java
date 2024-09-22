@@ -9,6 +9,7 @@ import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
 import org.jaybon.jaylog.domain.article.dto.req.ReqArticlePostDTOApiV1;
 import org.jaybon.jaylog.domain.article.dto.req.ReqArticlePutDTOApiV1;
 import org.jaybon.jaylog.domain.article.dto.res.ResArticleGetByIdDTOApiV1;
+import org.jaybon.jaylog.domain.article.dto.res.ResArticlePostDTOApiV1;
 import org.jaybon.jaylog.domain.article.dto.res.ResArticlePostLikeByIdDTOApiV1;
 import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.article.repository.ArticleRepository;
@@ -53,17 +54,18 @@ public class ArticleServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<ResDTO<Object>> postBy(
+    public ResponseEntity<ResDTO<ResArticlePostDTOApiV1>> postBy(
             ReqArticlePostDTOApiV1 dto,
             CustomUserDetails customUserDetails
     ) {
         System.out.println("dto = " + dto);
         UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
-        articleRepository.save(dto.getArticle().toEntityWith(userEntity));
+        ArticleEntity articleEntity = articleRepository.save(dto.getArticle().toEntityWith(userEntity));
         return new ResponseEntity<>(
-                ResDTO.builder()
+                ResDTO.<ResArticlePostDTOApiV1>builder()
                         .code(Constants.ResCode.OK)
                         .message("게시글 저장에 성공했습니다.")
+                        .data(ResArticlePostDTOApiV1.of(articleEntity))
                         .build(),
                 HttpStatus.OK
         );

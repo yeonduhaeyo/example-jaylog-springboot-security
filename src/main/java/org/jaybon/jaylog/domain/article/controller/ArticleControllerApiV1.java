@@ -8,6 +8,7 @@ import org.jaybon.jaylog.config.security.auth.CustomUserDetails;
 import org.jaybon.jaylog.domain.article.dto.req.ReqArticlePostDTOApiV1;
 import org.jaybon.jaylog.domain.article.dto.req.ReqArticlePutDTOApiV1;
 import org.jaybon.jaylog.domain.article.dto.res.ResArticleGetByIdDTOApiV1;
+import org.jaybon.jaylog.domain.article.dto.res.ResArticlePostDTOApiV1;
 import org.jaybon.jaylog.domain.article.dto.res.ResArticlePostLikeByIdDTOApiV1;
 import org.jaybon.jaylog.domain.article.service.ArticleServiceApiV1;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class ArticleControllerApiV1 {
     }
 
     @PostMapping
-    public ResponseEntity<ResDTO<Object>> postBy(
+    public ResponseEntity<ResDTO<ResArticlePostDTOApiV1>> postBy(
             @Valid @RequestBody ReqArticlePostDTOApiV1 dto,
             @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
