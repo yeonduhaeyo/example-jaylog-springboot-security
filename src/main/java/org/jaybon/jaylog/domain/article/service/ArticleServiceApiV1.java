@@ -91,7 +91,7 @@ public class ArticleServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<ResDTO<Object>> deleteById(
+    public ResponseEntity<ResDTO<Object>> deleteByIdAndCustomUserDetails(
             Long id,
             CustomUserDetails customUserDetails
     ) {

@@ -49,7 +49,11 @@ public class ResMainGetDTOApiV1 {
 
         public ArticlePage(Page<ArticleEntity> npostScrapEntityPage) {
             super(
-                    new PageImpl<>(Article.from(npostScrapEntityPage.getContent()))
+                    new PageImpl<>(
+                            Article.from(npostScrapEntityPage.getContent()),
+                            npostScrapEntityPage.getPageable(),
+                            npostScrapEntityPage.getTotalElements()
+                    )
             );
         }
 
@@ -92,7 +96,7 @@ public class ResMainGetDTOApiV1 {
                             .build();
                 }
                 boolean isLikeClicked;
-                if (loginUserEntity == null){
+                if (loginUserEntity == null) {
                     isLikeClicked = false;
                 } else {
                     isLikeClicked = articleEntity.getLikeEntityList()

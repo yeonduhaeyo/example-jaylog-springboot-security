@@ -36,8 +36,8 @@ spring:
         default_batch_fetch_size: 500
   servlet:
     multipart:
-      max-request-size: 10MB
-      max-file-size: 10MB
+      max-request-size: 111MB
+      max-file-size: 111MB
 
 springdoc:
   swagger-ui:

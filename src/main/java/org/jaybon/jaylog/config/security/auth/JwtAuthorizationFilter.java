@@ -34,7 +34,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        String accessJWT = accessJWTHeader.replace(Constants.Jwt.HEADER_PREFIX, "");
+        String accessJWT = accessJWTHeader.replaceFirst(Constants.Jwt.HEADER_PREFIX, "");
         try {
             decodedAccessJWT = JWT.require(Algorithm.HMAC512(Constants.Jwt.SECRET))
                     .build()

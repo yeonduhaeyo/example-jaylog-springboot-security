@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class MyServiceApiV1 {
     @Transactional
     public ResponseEntity<ResDTO<Object>> putBy(ReqMyPutInfoDTOApiV1 dto, CustomUserDetails customUserDetails) {
         UserEntity userEntity = UtilFunction.getUserEntityBy(userRepository, customUserDetails);
-        dto.getUser().updateWith(userEntity, passwordEncoder);
+        dto.updateWith(passwordEncoder, userEntity);
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(Constants.ResCode.OK)

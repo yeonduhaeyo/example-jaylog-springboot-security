@@ -9,6 +9,7 @@ import org.jaybon.jaylog.model.article.entity.ArticleEntity;
 import org.jaybon.jaylog.model.article.repository.ArticleRepository;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 import org.jaybon.jaylog.model.user.repository.UserRepository;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
 import java.net.URLDecoder;
@@ -20,6 +21,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UtilFunction {
+
+    public static String convertImageToBase64(MultipartFile multipartFile) {
+        if (multipartFile.isEmpty()) {
+            return null;
+        }
+        if (!isValidImageExtension(multipartFile.getOriginalFilename())) {
+            throw new BadRequestException("jpeg, jpg, png, gif 파일만 업로드 가능합니다.");
+        }
+        String imageBase64;
+        try {
+            imageBase64 = "data:" + multipartFile.getContentType() + ";base64,"
+                    + Base64.getEncoder().encodeToString(multipartFile.getBytes());
+        } catch (Exception e) {
+            throw new RuntimeException("프로필 이미지 변환에 실패했습니다." + e.getMessage());
+        }
+        return imageBase64;
+    }
+
+    public static boolean isValidImageExtension(String fileName) {
+        return Pattern.compile(Constants.Regex.VALID_IMAGE_EXTENSION).matcher(fileName).matches();
+    }
 
     public static ArticleEntity getArticleEntityBy(
             ArticleRepository articleRepository,

@@ -38,7 +38,7 @@ public class ArticleEntity {
     @Column(name = "thumbnail")
     private String thumbnail;
 
-    @Column(name = "content", length = 1024 * 1024, nullable = false)
+    @Column(name = "content", length = 1024 * 1024 * 100, nullable = false)
     private String content;
 
     @Column(name = "create_date", nullable = false)

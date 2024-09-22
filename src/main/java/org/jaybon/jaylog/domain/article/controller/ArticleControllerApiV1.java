@@ -49,11 +49,11 @@ public class ArticleControllerApiV1 {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> deleteById(
+    public ResponseEntity<ResDTO<Object>> deleteByIdAndCustomUserDetails(
             @PathVariable Long id,
             @NotNull @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return articleServiceApiV1.deleteById(id, customUserDetails);
+        return articleServiceApiV1.deleteByIdAndCustomUserDetails(id, customUserDetails);
     }
 
     @PostMapping("/{id}/like")

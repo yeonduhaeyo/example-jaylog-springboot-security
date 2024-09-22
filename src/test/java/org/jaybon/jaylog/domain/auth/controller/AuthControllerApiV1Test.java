@@ -9,7 +9,6 @@ import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostJoinDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostLoginDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.req.ReqAuthPostRefreshDTOApiV1;
 import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostLoginDTOApiV1;
-import org.jaybon.jaylog.domain.auth.dto.res.ResAuthPostRefreshDTOApiV1;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 @SpringBootTest
@@ -44,7 +42,7 @@ public class AuthControllerApiV1Test {
     private ObjectMapper objectMapper;
 
     @Test
-    public void testJoinSuccess() throws Exception {
+    public void testAuthPostJoinSuccess() throws Exception {
         ReqAuthPostJoinDTOApiV1 reqDto = ReqAuthPostJoinDTOApiV1.builder()
                 .user(
                         ReqAuthPostJoinDTOApiV1.User.builder()
@@ -89,7 +87,7 @@ public class AuthControllerApiV1Test {
     }
 
     @Test
-    public void testLoginSuccess() throws Exception {
+    public void testAuthPostLoginSuccess() throws Exception {
         ReqAuthPostLoginDTOApiV1 reqDto = ReqAuthPostLoginDTOApiV1.builder()
                 .user(
                         ReqAuthPostLoginDTOApiV1.User.builder()
@@ -133,10 +131,11 @@ public class AuthControllerApiV1Test {
     }
 
     @Test
-    public void testRefreshSuccess() throws Exception {
-        MvcResult mvcResult = login();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        ResDTO<ResAuthPostLoginDTOApiV1> resDto =  objectMapper.readValue(contentAsString, new TypeReference<>() {});
+    public void testAuthPostRefreshSuccess() throws Exception {
+        ResDTO<ResAuthPostLoginDTOApiV1> resDto = objectMapper.readValue(
+                login().getResponse().getContentAsString(),
+                new TypeReference<>() {}
+        );
         ReqAuthPostRefreshDTOApiV1 reqDto = ReqAuthPostRefreshDTOApiV1.builder()
                 .refreshJwt(resDto.getData().getRefreshJwt())
                 .build();
