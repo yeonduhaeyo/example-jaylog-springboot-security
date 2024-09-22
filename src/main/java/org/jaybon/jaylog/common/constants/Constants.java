@@ -11,8 +11,8 @@ public class Constants {
     }
 
     public static class Regex {
-        public static final String MARKDOWN = "/([*_#`~>!\\[\\](){}|\\\\])/gi";
-        public static final String MARKDOWN_IMAGE = "/\\[.*]\\((.*)\\)/gi";
+        public static final String MARKDOWN = "(\\*\\*|\\*|_|#|`{1,3}|~{2}|-{3,}|>{1,}|\\[.*?\\]\\(.*?\\)|!\\[.*?\\]\\(.*?\\)|\\n)";
+        public static final String MARKDOWN_IMAGE = "!\\[[^\\]]*\\]\\(([^)]+)\\)";
         public static final String VALID_IMAGE_EXTENSION = "([^\\s]+(\\.(?i)(jpg|jpeg|png|gif))$)";
     }
 

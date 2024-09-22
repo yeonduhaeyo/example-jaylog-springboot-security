@@ -69,7 +69,8 @@ public class ResMyGetDTOApiV1 {
             boolean isLikeClicked = articleEntity.getLikeEntityList()
                     .stream()
                     .anyMatch(likeEntity -> Objects.equals(likeEntity.getUserEntity().getId(), loginUserEntity.getId()));
-            String contentWithoutMarkdown = articleEntity.getContent().replaceAll(Constants.Regex.MARKDOWN, "");
+            String contentWithoutMarkdown = articleEntity.getContent()
+                    .replaceAll(Constants.Regex.MARKDOWN, "");
             String summary = contentWithoutMarkdown.length() > 150 ? contentWithoutMarkdown.substring(0, 151) : contentWithoutMarkdown;
             return Article.builder()
                     .id(articleEntity.getId())
