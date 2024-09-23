@@ -1,6 +1,6 @@
 server:
   port: 80
-  max-http-request-header-size: 10MB
+  max-http-request-header-size: 5MB
   compression:
       enabled: true
 

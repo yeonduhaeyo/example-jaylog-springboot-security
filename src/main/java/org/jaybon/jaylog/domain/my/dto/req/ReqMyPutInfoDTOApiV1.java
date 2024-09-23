@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jaybon.jaylog.common.exception.BadRequestException;
 import org.jaybon.jaylog.model.user.entity.UserEntity;
 import org.jaybon.jaylog.util.UtilFunction;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +38,9 @@ public class ReqMyPutInfoDTOApiV1 {
             userEntity.setSimpleDescription(simpleDescription);
         }
         if (profileImage != null && !profileImage.isEmpty()) {
+            if (profileImage.getSize() > 2048) {
+                throw new BadRequestException("2킬로바이트 이하의 이미지로 요청해주세요.( https://favicon.io 사이트 활용 )");
+            }
             isInvalid = true;
             userEntity.setProfileImage(UtilFunction.convertImageToBase64(profileImage));
         }
