@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class ResDTO<T> {
+
+    // 공통 최상위 DTO
+
     private Integer code;
     private String message;
     private T data;

@@ -2,6 +2,8 @@ package org.jaybon.jaylog.common.constants;
 
 public class Constants {
 
+    // 상수 클래스
+
     public static class Jwt {
         public static final String SECRET = "sweetsalt"; // 서버만 알고 있는 비밀값
         public static final int ACCESS_EXPIRATION_TIME = 30 * 60 * 1000; // 만료기간 30분 (1/1000초)
